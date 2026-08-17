@@ -9,12 +9,17 @@ import Tasks from "./pages/Tasks"
 import Team from "./pages/Team"
 import Settings from "./pages/Settings"
 
+import Alert from './components/ui/Alert';
+import { showAlert } from './components/ui/Alert';
 
 export default function App() {
   return (
     <div className="bg-gray-100">
       <AppProvider>
         <Router>
+          {/* Alert container */}
+          <div className="absolute right-0 top-0 p-2" id="alert-container">
+          </div>
           <Navbar />
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -25,6 +30,26 @@ export default function App() {
           </Routes>
         </Router>
       </AppProvider>
+      {/* Bottone di test per le alert */}
+      {/* <button
+        onClick={() => showAlert("Test alert: Confermato!", "success")}
+        style={{
+          position: "fixed",
+          bottom: "1rem",
+          right: "1rem",
+          zIndex: 50,
+          padding: "0.5rem 1rem",
+          borderRadius: "0.375rem",
+          background: "#f87171",
+          color: "white",
+          border: "none",
+          fontWeight: "bold",
+          cursor: "pointer",
+        }}
+      >
+        Test Alert
+      </button> */}
+ 
     </div>
   );
 }

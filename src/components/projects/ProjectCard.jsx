@@ -9,6 +9,9 @@ import { Trash, SquarePen, Plus, Minus } from 'lucide-react';
 
 import { useAppContext } from "../../context/appContext";
 
+import { showAlert } from "../ui/Alert";
+
+
 export default function ProjectCard(
     {
         name,

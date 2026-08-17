@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from 'react';
+import { showAlert } from '../components/ui/Alert';
 
 const initialProjects = [
     {
@@ -147,6 +148,15 @@ export function AppProvider({ children }) {
                     }
             )
         );
+        const updatedProject = projects.find(project => project.id === projectId);
+        const updatedTask = updatedProject?.tasks.find(task => task.id === taskId);
+        if (updatedTask && !updatedTask.completed) {
+            showAlert("Task marked as completed", "success");
+        } else if (updatedTask && updatedTask.completed) {
+            showAlert("Task marked as incomplete", "info");
+        } else {
+            showAlert("Task not found", "warning");
+        }
     };
 
     const [users, setUsers] = useState(initialUsers);
