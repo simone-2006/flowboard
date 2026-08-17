@@ -6,7 +6,9 @@ export default function Projects() {
     const { projects } = useAppContext();
 
     return (
-        <Page title="Projects">
+        <Page >
+            <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Projects</h3>
+
             <div className="grid grid-cols-1 gap-6">
                 {projects.map(project =>
                     <ProjectCard

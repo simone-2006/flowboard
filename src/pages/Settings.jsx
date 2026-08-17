@@ -5,7 +5,8 @@ import Page from "../components/layout/Page";
 
 export default function Settings() {
   return (
-    <Page title="Settings">
+    <Page>
+      <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Settings</h3>
 
     </Page>
   );

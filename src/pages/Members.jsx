@@ -5,7 +5,8 @@ import Page from "../components/layout/Page";
 
 export default function Members() {
   return (
-    <Page title="Members">
+    <Page >
+      <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Members</h3>
 
     </Page>
   )

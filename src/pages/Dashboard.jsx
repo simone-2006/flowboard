@@ -38,12 +38,13 @@ export default function Dashboard() {
     );
   }, 0);
 
-  {/* (100 * TC) / TT */}
-   const tasksPercentage = (100 * totalTasksCompleted / totalTasksToDo).toFixed(0)
+  {/* (100 * TC) / TT */ }
+  const tasksPercentage = (100 * totalTasksCompleted / totalTasksToDo).toFixed(0)
 
   return (
     <>
-      <Page title="Dashboard">
+      <Page>
+        <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Dashboard</h3>
         <div className="grid grid-cols-3">
           <DashboardCard cardTitle="Total projects">
             <p className="font-bold text-xl text-amber-600">{totalProjects}</p>
