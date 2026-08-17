@@ -6,92 +6,109 @@ import dingSound from '../sound/Ding.mp3';
 const initialProjects = [
     {
         id: 1,
-        name: 'Trovare un lavoro',
-        description: 'Step per trovare un nuovo lavoro',
-        color: 'orange',
+        name: 'Cercare lavoro',
+        description: 'Organizzare la ricerca di un lavoro e tenere traccia delle candidature.',
+        color: 'blue',
         creatorID: 1,
         status: 'Active',
-        dueDate: '2027-01-01',
+        dueDate: '2026-09-30',
         tasks: [
-            { id: 101, title: 'Sistemare il profilo linkedin / indeed', completed: true, dueDate: '2028-06-30' },
-            { id: 102, title: 'Sistemare il curriculum', completed: true, dueDate: '2028-07-08' },
-            { id: 103, title: 'Mandare curriculum alle aziende o candidarsi tramite indeed/linkedin', completed: false, dueDate: '2028-07-12' },
-            { id: 104, title: 'Fare tutti i colloqui', completed: true, dueDate: '2028-07-15' },
-            { id: 105, title: 'Aspettare una risposta e valutare le varie offerte', completed: false, dueDate: '20287-08-01' },
-            // { id: 106, title: 'Final review meeting', completed: false, dueDate: '20287-09-13' },
-            // { id: 107, title: 'Deploy to production', completed: false, dueDate: '2028-09-15' },
+            { id: 101, title: 'Sistemare il curriculum', completed: true, dueDate: '2026-08-20' },
+            { id: 102, title: 'Aggiornare LinkedIn', completed: true, dueDate: '2026-08-21' },
+            { id: 103, title: 'Cercare aziende interessanti', completed: true, dueDate: '2026-08-25' },
+            { id: 104, title: 'Mandare le prime candidature', completed: false, dueDate: '2026-08-28' },
+            { id: 105, title: 'Prepararsi per i colloqui', completed: false, dueDate: '2026-09-05' },
+            { id: 106, title: 'Fare il punto sulle candidature', completed: false, dueDate: '2026-09-15' }
         ]
     },
+
     {
         id: 2,
-        name: 'Project Beta',
-        description: 'Migration to Beta infrastructure.',
+        name: 'Organizzare la settimana',
+        description: 'Mettere in ordine le cose da fare durante la settimana.',
         color: 'green',
-        creatorID: 2,
-        status: 'Planning',
-        dueDate: '2028-10-01',
+        creatorID: 1,
+        status: 'Active',
+        dueDate: '2026-08-23',
         tasks: [
-            { id: 201, title: 'Prepare migration plan', completed: true, dueDate: '2028-07-01' },
-            { id: 202, title: 'Setup servers', completed: true, dueDate: '2028-07-10' },
-            { id: 203, title: 'Write migration scripts', completed: false, dueDate: '2028-07-18' },
-            { id: 204, title: 'QA environment test', completed: false, dueDate: '2028-08-01' },
-            { id: 205, title: 'Cut over data', completed: false, dueDate: '2028-09-01' },
-            { id: 206, title: 'Post-migration checks', completed: false, dueDate: '2028-09-14' },
-            { id: 207, title: 'Document new architecture', completed: false, dueDate: '2028-09-25' }
+            { id: 201, title: 'Fare la spesa', completed: true, dueDate: '2026-08-17' },
+            { id: 202, title: 'Sistemare la camera', completed: false, dueDate: '2026-08-18' },
+            { id: 203, title: 'Portare la macchina dal meccanico', completed: false, dueDate: '2026-08-19' },
+            { id: 204, title: 'Pagare le bollette', completed: false, dueDate: '2026-08-20' },
+            { id: 205, title: 'Sistemare alcune cose al computer', completed: false, dueDate: '2026-08-21' },
+            { id: 206, title: 'Organizzare il weekend', completed: false, dueDate: '2026-08-22' }
         ]
     },
+
     {
         id: 3,
-        name: 'Project Gamma',
-        description: 'Mobile app redesign for Gamma.',
-        color: 'blue',
-        creatorID: 3,
+        name: 'Progetto personale React',
+        description: 'Sviluppare un piccolo progetto per fare pratica con React.',
+        color: 'purple',
+        creatorID: 1,
         status: 'Active',
-        dueDate: '2028-11-20',
+        dueDate: '2026-08-25',
         tasks: [
-            { id: 301, title: 'Research user needs', completed: true, dueDate: '2028-07-05' },
-            { id: 302, title: 'Sketch new UI', completed: true, dueDate: '2028-07-18' },
-            { id: 303, title: 'Develop prototype', completed: false, dueDate: '2028-08-15' },
-            { id: 304, title: 'Iterate on feedback', completed: false, dueDate: '2028-09-03' },
-            { id: 305, title: 'Accessibility checks', completed: false, dueDate: '2028-09-15' },
-            { id: 306, title: 'Release candidate', completed: false, dueDate: '2028-11-10' },
-            { id: 307, title: 'App store deployment', completed: false, dueDate: '2028-11-20' }
+            { id: 301, title: 'Creare il progetto con Vite', completed: true, dueDate: '2026-08-17' },
+            { id: 302, title: 'Impostare la struttura delle cartelle', completed: true, dueDate: '2026-08-17' },
+            { id: 303, title: 'Creare la navbar', completed: true, dueDate: '2026-08-18' },
+            { id: 304, title: 'Creare la pagina dei progetti', completed: false, dueDate: '2026-08-19' },
+            { id: 305, title: 'Aggiungere i filtri', completed: false, dueDate: '2026-08-20' },
+            { id: 306, title: 'Salvare i dati in localStorage', completed: false, dueDate: '2026-08-21' },
+            { id: 307, title: 'Sistemare la versione mobile', completed: false, dueDate: '2026-08-23' },
+            { id: 308, title: 'Fare un ultimo controllo generale', completed: false, dueDate: '2026-08-25' }
         ]
     },
+
     {
         id: 4,
-        name: 'Project Delta',
-        description: 'Quarterly Marketing Push.',
+        name: 'Preparare una serata',
+        description: 'Organizzare tutto quello che serve per una serata con amici.',
         color: 'orange',
-        creatorID: 4,
-        status: 'Completed',
-        dueDate: '2028-06-20',
+        creatorID: 1,
+        status: 'Planning',
+        dueDate: '2026-08-29',
         tasks: [
-            { id: 401, title: 'Campaign brainstorm', completed: true, dueDate: '2028-05-13' },
-            { id: 402, title: 'Create visuals', completed: true, dueDate: '2028-05-28' },
-            { id: 403, title: 'Schedule social posts', completed: true, dueDate: '2028-06-02' },
-            { id: 404, title: 'Send newsletter', completed: true, dueDate: '2028-06-03' },
-            { id: 405, title: 'Monitor campaign metrics', completed: true, dueDate: '2028-06-15' },
-            { id: 406, title: 'Client follow-up', completed: true, dueDate: '2028-06-18' },
-            { id: 407, title: 'Final campaign report', completed: true, dueDate: '2028-06-20' }
+            { id: 401, title: 'Decidere dove andare', completed: true, dueDate: '2026-08-20' },
+            { id: 402, title: 'Sentire gli altri', completed: false, dueDate: '2026-08-21' },
+            { id: 403, title: 'Prenotare il tavolo', completed: false, dueDate: '2026-08-23' },
+            { id: 404, title: 'Organizzare le macchine', completed: false, dueDate: '2026-08-27' },
+            { id: 405, title: 'Controllare l orario', completed: false, dueDate: '2026-08-28' }
         ]
     },
+
     {
         id: 5,
-        name: 'Project Epsilon',
-        description: 'Research and development for Epsilon AI engine.',
-        color: 'pink',
-        creatorID: 5,
+        name: 'Sistemare il PC',
+        description: 'Fare un po’ di manutenzione e sistemare le cose lasciate indietro.',
+        color: 'red',
+        creatorID: 1,
         status: 'Planning',
-        dueDate: '2025-01-15',
+        dueDate: '2026-09-05',
         tasks: [
-            { id: 501, title: 'Literature review', completed: false, dueDate: '2028-08-10' },
-            { id: 502, title: 'Data collection', completed: false, dueDate: '2028-09-01' },
-            { id: 503, title: 'Initial model training', completed: false, dueDate: '2028-10-15' },
-            { id: 504, title: 'Test model benchmarks', completed: false, dueDate: '2028-11-10' },
-            { id: 505, title: 'Iterate model tuning', completed: false, dueDate: '2028-12-10' },
-            { id: 506, title: 'Pilot project', completed: false, dueDate: '2025-01-10' },
-            { id: 507, title: 'Results documentation', completed: false, dueDate: '2025-01-15' }
+            { id: 501, title: 'Fare il backup dei file importanti', completed: false, dueDate: '2026-08-24' },
+            { id: 502, title: 'Eliminare i programmi inutilizzati', completed: false, dueDate: '2026-08-25' },
+            { id: 503, title: 'Sistemare le cartelle dei progetti', completed: false, dueDate: '2026-08-27' },
+            { id: 504, title: 'Controllare gli aggiornamenti', completed: false, dueDate: '2026-08-29' },
+            { id: 505, title: 'Fare una pulizia generale', completed: false, dueDate: '2026-09-01' }
+        ]
+    },
+
+    {
+        id: 6,
+        name: 'Vacanza',
+        description: 'Organizzare le cose da fare prima di partire.',
+        color: 'pink',
+        creatorID: 1,
+        status: 'Completed',
+        dueDate: '2026-07-28',
+        tasks: [
+            { id: 601, title: 'Prenotare hotel', completed: true, dueDate: '2026-07-05' },
+            { id: 602, title: 'Controllare i documenti', completed: true, dueDate: '2026-07-10' },
+            { id: 603, title: 'Preparare la valigia', completed: true, dueDate: '2026-07-25' },
+            { id: 604, title: 'Controllare il viaggio', completed: true, dueDate: '2026-07-26' },
+            { id: 605, title: 'Preparare caricabatterie e cuffie', completed: true, dueDate: '2026-07-27' },
+            { id: 606, title: 'Partire', completed: true, dueDate: '2026-07-28' }
         ]
     }
 ];
