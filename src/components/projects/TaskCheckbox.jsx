@@ -1,16 +1,13 @@
-import { useState } from "react";
-
-function TaskCheckbox({check = false}) {
-    const [checked, setChecked] = useState(check);
-
+function TaskCheckbox({ checked = false, onChange }) {
     return (
         <button
-            onClick={() => setChecked(!checked)}
-            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors
-        ${checked
+            type="button"
+            onClick={() => onChange?.(!checked)}
+            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                checked
                     ? "bg-green-600 border-green-600 text-white"
                     : "bg-transparent border-gray-400 text-transparent"
-                }`}
+            }`}
         >
             ✓
         </button>

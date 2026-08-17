@@ -7,9 +7,12 @@ import ProjectStatusChip from "./ProjectStatusChip";
 import { useState } from "react";
 import { Trash, SquarePen, Plus, Minus } from 'lucide-react';
 
+import { useAppContext } from "../../context/appContext";
+
 export default function ProjectCard(
     {
         name,
+        id,
         description,
         color,
         manager,
@@ -25,10 +28,16 @@ export default function ProjectCard(
         console.log(addTaskOpen)
     };
 
+    const { toggleTask } = useAppContext();
+
 
     const totalTask = tasks.length;
     const taskCompleted = tasks.filter(task => task.completed).length;
     const taskTodo = tasks.filter(task => !task.completed).length;
+
+    // (100 * TC) / TT  -> Percentuale di task completate su tutte le task
+    // Il calcolo corretto: completed / total * 100
+    const tasksPercentage = totalTask === 0 ? 0 : ((100 * taskCompleted) / totalTask).toFixed(0);
 
     return (
         <div className="bg-white rounded-md shadow-md p-2">
@@ -40,7 +49,7 @@ export default function ProjectCard(
                         style={{ backgroundColor: color }}
                     ></div>
                     <h1 className="text-xl font-semibold">{name}</h1>
-                    <ProjectStatusChip status = {status} />
+                    <ProjectStatusChip status={status} />
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -60,7 +69,7 @@ export default function ProjectCard(
             </div>
 
             <div className="my-2">
-                <TaskCompletionProgressBar percentage={10}></TaskCompletionProgressBar>
+                <TaskCompletionProgressBar percentage={tasksPercentage}></TaskCompletionProgressBar>
             </div>
 
             <div className="rounded-md bg-gray-200 p-2">
@@ -106,7 +115,10 @@ export default function ProjectCard(
                                 </td>
 
                                 <td className="px-2 py-0.5">
-                                    <TaskCheckbox check={task.completed} />
+                                    <TaskCheckbox
+                                        checked={task.completed}
+                                        onChange={() => toggleTask(id, task.id)}
+                                    />
                                 </td>
                             </tr>
                         ))}
@@ -117,7 +129,11 @@ export default function ProjectCard(
                                     <Input></Input>
                                 </td>
                                 <td className="px-2 py-0.5">
-                                    <TaskCheckbox check={false} />
+                                    {/* <TaskCheckbox
+                                        checked={task.completed}
+                                        onChange={() => toggleTask(id, task.id)}
+                                    /> */}
+                                    ???
                                 </td>
                             </tr>
 

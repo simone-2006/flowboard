@@ -8,6 +8,8 @@
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../ui/Button';
 
+import { Settings } from 'lucide-react';
+
 export default function Navbar() {
     const navElements = [
         {
@@ -26,17 +28,17 @@ export default function Navbar() {
             name: "Team",
             link: "/team"
         },
-        {
-            name: "Settings",
-            link: "/settings"
-        },
+        // {
+        //     name: "Settings",
+        //     link: "/settings"
+        // },
     ];
 
     const location = useLocation();
 
     return (
-        <nav>
-            <ul className='flex items-center gap-2 p-2 m-2 rounded-md shadow-md bg-white'>
+        <nav className='flex justify-between items-center rounded-md shadow-md bg-white  gap-2 p-2 m-2'>
+            <ul className='flex items-center gap-2'>
                 {navElements.map(({ name, link }) => (
                     <Button
                         key={link}
@@ -46,6 +48,7 @@ export default function Navbar() {
                     </Button>
                 ))}
             </ul>
+            <Button icon={<Settings />} variant='ghost'></Button>
         </nav>
     );
 }

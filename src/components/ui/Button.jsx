@@ -11,7 +11,7 @@ export default function Button({ variant = "primary", icon = "", children, onCli
     };
     return (
         <button
-            className={`flex items-center gap-2 px-1 py-0.5 rounded-md cursor-pointer transition-all ${variantClass[variant]}`}
+            className={`flex items-center max-h-8 gap-2 px-1 py-0.5 rounded-md cursor-pointer transition-all ${variantClass[variant]}`}
             onClick={onClick}
             type="button"
         >

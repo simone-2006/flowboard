@@ -45,16 +45,16 @@ export default function Dashboard() {
     <>
       <Page title="Dashboard">
         <div className="grid grid-cols-3">
-          <DashboardCard cardTitle="Projects">
+          <DashboardCard cardTitle="Total projects">
             <p className="font-bold text-xl text-amber-600">{totalProjects}</p>
           </DashboardCard>
-          <DashboardCard cardTitle="Tasks to do">
+          <DashboardCard cardTitle="Total task to do">
             <p className="font-bold text-xl text-blue-600">{totalTasksToDo}</p>
           </DashboardCard>
-          <DashboardCard cardTitle="Task completed">
+          <DashboardCard cardTitle="Total task completed">
             <p className="font-bold text-xl text-green-600">{totalTasksCompleted}</p>
           </DashboardCard>
-          <DashboardCard cardTitle="Overdue">
+          <DashboardCard cardTitle="Total task overdue">
             <p className="font-bold text-xl text-red-600">{totalOverdueTasks}</p>
           </DashboardCard>
         </div>
