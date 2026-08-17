@@ -11,7 +11,8 @@ export default function TaskCompletionProgressBar({ percentage = 0 }) {
 
       <div className="bg-gray-200 max-w-80 h-2 rounded-md overflow-hidden">
         <div
-          className="bg-blue-500 h-2 transition-all duration-300"
+          className={`${progress === 100 ? "bg-green-500" : "bg-blue-500"} h-2 transition-all duration-300`}
+     
           style={{ width: `${progress}%` }}
         ></div>
       </div>
