@@ -1,5 +1,6 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
+import { AppProvider } from './context/appContext';
 import Navbar from './components/layout/Navbar';
 
 import Dashboard from "./pages/Dashboard"
@@ -11,15 +12,17 @@ import Settings from "./pages/Settings"
 
 export default function App() {
   return (
-    <Router>
-      <Navbar></Navbar>
-      <Routes>
-        <Route path="/" element={<Dashboard />} /> {/* Dashboard */}
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/tasks" element={<Tasks />} />
-        <Route path="/team" element={<Team />} />
-        <Route path="/settings" element={<Settings />} />
-      </Routes>
-    </Router>
+    <AppProvider>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/settings" element={<Settings />} />
+        </Routes>
+      </Router>
+    </AppProvider>
   );
 }

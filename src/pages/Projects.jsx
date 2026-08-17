@@ -1,12 +1,26 @@
-import Button from "../components/ui/Button";
-import Input from "../components/ui/Input"
-
 import Page from "../components/layout/Page";
+import ProjectCard from "../components/projects/ProjectCard";
+import { useAppContext } from "../context/appContext";
 
 export default function Projects() {
+    const { projects } = useAppContext();
+
     return (
         <Page title="Projects">
-
+            <div className="grid grid-cols-1 gap-3">
+                {projects.map(project =>
+                    <ProjectCard
+                        key={project.id}
+                        name={project.name}
+                        description={project.description}
+                        color={project.color}
+                        manager={project.manager}
+                        tasks={project.tasks}
+                        dueDate={project.dueDate}
+                        status={project.status}
+                    />
+                )}
+            </div>
         </Page>
     )
 }
