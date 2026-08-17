@@ -51,7 +51,7 @@ export default function Alert({ variant = "success", children, onClose }) {
     return (
         <div
             ref={alertRef}
-            className={`bg-gray-100 rounded-md flex items-center gap-2 px-2 py-1 font-bold ${variantClasses[variant] || ""} ${baseAnim} ${showAnim}`}
+            className={`bg-white py-2 rounded-md flex items-center gap-2 px-2 font-bold ${variantClasses[variant] || ""} ${baseAnim} ${showAnim}`}
         >
             {variantIcon[variant] || null}
             {children}

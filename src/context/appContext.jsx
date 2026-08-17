@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { showAlert } from '../components/ui/Alert';
+import useSound from 'use-sound';
+import dingSound from '../sound/Ding.mp3';
 
 const initialProjects = [
     {
@@ -132,6 +134,8 @@ const initialUsers = [
 export function AppProvider({ children }) {
     const [projects, setProjects] = useState(initialProjects);
 
+    const [playDing] = useSound(dingSound);
+
     //toggle task status
     const toggleTask = (projectId, taskId) => {
         setProjects(prev =>
@@ -152,6 +156,7 @@ export function AppProvider({ children }) {
         const updatedTask = updatedProject?.tasks.find(task => task.id === taskId);
         if (updatedTask && !updatedTask.completed) {
             showAlert("Task marked as completed", "success");
+            playDing();
         } else if (updatedTask && updatedTask.completed) {
             showAlert("Task marked as incomplete", "info");
         } else {

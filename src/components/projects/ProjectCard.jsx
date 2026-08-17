@@ -4,6 +4,7 @@ import TaskCheckbox from "./TaskCheckbox";
 import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
+
 import { useState } from "react";
 import { Trash, SquarePen, Plus, Minus } from 'lucide-react';
 
