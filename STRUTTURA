@@ -1,0 +1,36 @@
+src/
+│
+├── components/
+│   ├── ui/
+│   ├── layout/
+│   ├── dashboard/
+│   ├── projects/
+│   ├── tasks/
+│   └── team/
+│
+├── pages/
+│   ├── Dashboard.jsx
+│   ├── Projects.jsx
+│   ├── ProjectDetails.jsx
+│   ├── Tasks.jsx
+│   ├── Team.jsx
+│   ├── MemberDetails.jsx
+│   └── Settings.jsx
+│
+├── hooks/
+│   ├── useLocalStorage.js
+│   └── useProjects.js
+│
+├── context/
+│   └── AppContext.jsx
+│
+├── utils/
+│   ├── filters.js
+│   ├── statistics.js
+│   └── storage.js
+│
+├── data/
+│   └── mockData.js
+│
+├── App.jsx
+└── main.jsx
