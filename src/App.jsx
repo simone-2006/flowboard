@@ -12,17 +12,19 @@ import Settings from "./pages/Settings"
 
 export default function App() {
   return (
-    <AppProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/projects" element={<Projects />} />
-          <Route path="/tasks" element={<Tasks />} />
-          <Route path="/team" element={<Team />} />
-          <Route path="/settings" element={<Settings />} />
-        </Routes>
-      </Router>
-    </AppProvider>
+    <div className="bg-gray-100">
+      <AppProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/projects" element={<Projects />} />
+            <Route path="/tasks" element={<Tasks />} />
+            <Route path="/team" element={<Team />} />
+            <Route path="/settings" element={<Settings />} />
+          </Routes>
+        </Router>
+      </AppProvider>
+    </div>
   );
 }

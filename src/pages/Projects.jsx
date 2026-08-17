@@ -7,7 +7,7 @@ export default function Projects() {
 
     return (
         <Page title="Projects">
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-6">
                 {projects.map(project =>
                     <ProjectCard
                         key={project.id}

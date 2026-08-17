@@ -36,7 +36,7 @@ export default function Navbar() {
 
     return (
         <nav>
-            <ul className='flex items-center gap-2 p-1 m-1 rounded-md shadow-md bg-white'>
+            <ul className='flex items-center gap-2 p-2 m-2 rounded-md shadow-md bg-white'>
                 {navElements.map(({ name, link }) => (
                     <Button
                         key={link}

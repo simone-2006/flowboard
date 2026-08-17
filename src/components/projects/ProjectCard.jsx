@@ -1,8 +1,11 @@
 import Button from "../ui/Button";
+import Input from "../ui/Input";
 import TaskCheckbox from "./TaskCheckbox";
 import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
+import ProjectStatusChip from "./ProjectStatusChip";
 
-import { Trash, SquarePen } from 'lucide-react';
+import { useState } from "react";
+import { Trash, SquarePen, Plus, Minus } from 'lucide-react';
 
 export default function ProjectCard(
     {
@@ -15,15 +18,29 @@ export default function ProjectCard(
         status
     }
 ) {
+    const [addTaskOpen, setAddTaskOpen] = useState(false);
+
+    const handleOpenAddTask = () => {
+        addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
+        console.log(addTaskOpen)
+    };
+
+
+    const totalTask = tasks.length;
+    const taskCompleted = tasks.filter(task => task.completed).length;
+    const taskTodo = tasks.filter(task => !task.completed).length;
+
     return (
         <div className="bg-white rounded-md shadow-md p-2">
             <div className="flex items-center justify-between">
+
                 <div className="flex gap-1 items-center">
                     <div
-                        className="h-2 w-2 rounded-full"
+                        className="h-3 w-3"
                         style={{ backgroundColor: color }}
                     ></div>
                     <h1 className="text-xl font-semibold">{name}</h1>
+                    <ProjectStatusChip status = {status} />
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -31,18 +48,29 @@ export default function ProjectCard(
                     <Button variant="danger" icon={<Trash size={18} />}></Button>
                 </div>
 
-
             </div>
 
 
             <p className="text-xs text-gray-500">{description}</p>
+
+
+            <div className="my-2 text-gray-900 flex text-base">
+                <p>Task completed: </p>
+                {taskCompleted}/{totalTask}
+            </div>
 
             <div className="my-2">
                 <TaskCompletionProgressBar percentage={10}></TaskCompletionProgressBar>
             </div>
 
             <div className="rounded-md bg-gray-200 p-2">
-                <h2 className="text-base font-bold">Tasks</h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-base font-bold">Tasks</h2>
+                    <Button variant="ghostPrimary" icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />} onClick={handleOpenAddTask}>
+                        Add task
+                    </Button>
+
+                </div>
                 <table className="w-full text-sm mt-1">
                     <thead>
                         <tr className="bg-gray-100">
@@ -82,6 +110,20 @@ export default function ProjectCard(
                                 </td>
                             </tr>
                         ))}
+                        {addTaskOpen ? (
+                            <tr className="border-b border-gray-400">
+                                <td className="px-2 py-0.5"><Input></Input></td>
+                                <td className="px-2 py-0.5">
+                                    <Input></Input>
+                                </td>
+                                <td className="px-2 py-0.5">
+                                    <TaskCheckbox check={false} />
+                                </td>
+                            </tr>
+
+                        )
+
+                            : ""}
                     </tbody>
                 </table>
             </div>

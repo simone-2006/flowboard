@@ -5,7 +5,7 @@ const initialProjects = [
         id: 1,
         name: 'Project Alpha',
         description: 'Development of the new Alpha platform.',
-        color: 'blue',
+        color: 'purple',
         manager: 'Simone',
         status: 'Active',
         tasks: [
