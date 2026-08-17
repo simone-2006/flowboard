@@ -1,5 +1,12 @@
+import Button from "../components/ui/Button";
+import Input from "../components/ui/Input"
+
+import Page from "../components/layout/Page";
+
 export default function Members() {
   return (
-    <div></div>
-  );
+    <Page title="Members">
+
+    </Page>
+  )
 }
