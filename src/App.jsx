@@ -17,10 +17,11 @@ export default function App() {
     <div className="bg-gray-100">
       <AppProvider>
         <Router>
-          {/* Alert container */}
-          <div className="absolute right-0 top-0 p-2" id="alert-container">
+          {/* Alert container - fixed to stay visible when scrolling */}
+          <div className="fixed right-0 top-0 p-2 z-50" id="alert-container">
           </div>
           <Navbar />
+     
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/projects" element={<Projects />} />
