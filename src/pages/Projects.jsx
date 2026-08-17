@@ -15,7 +15,7 @@ export default function Projects() {
                         name={project.name}
                         description={project.description}
                         color={project.color}
-                        manager={project.manager}
+                        creatorID={project.creatorID}
                         tasks={project.tasks}
                         dueDate={project.dueDate}
                         status={project.status}

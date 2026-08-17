@@ -20,18 +20,14 @@ export default function Navbar() {
             name: "Projects",
             link: "/projects"
         },
-        {
-            name: "Tasks",
-            link: "/tasks"
-        },
+        // {
+        //     name: "Tasks",
+        //     link: "/tasks"
+        // },
         {
             name: "Team",
             link: "/team"
         },
-        // {
-        //     name: "Settings",
-        //     link: "/settings"
-        // },
     ];
 
     const location = useLocation();
@@ -48,7 +44,10 @@ export default function Navbar() {
                     </Button>
                 ))}
             </ul>
-            <Button icon={<Settings />} variant='ghost'></Button>
+            <Link to="/settings">
+                <Button icon={<Settings />} variant='ghost' />
+            </Link>
         </nav>
+       
     );
 }

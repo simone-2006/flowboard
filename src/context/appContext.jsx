@@ -3,20 +3,20 @@ import { createContext, useContext, useState } from 'react';
 const initialProjects = [
     {
         id: 1,
-        name: 'Project Alpha',
-        description: 'Development of the new Alpha platform.',
-        color: 'purple',
-        manager: 'Simone',
+        name: 'Trovare un lavoro',
+        description: 'Step per trovare un nuovo lavoro',
+        color: 'orange',
+        creatorID: 1,
         status: 'Active',
-        dueDate: '2016-09-15',
+        dueDate: '2027-01-01',
         tasks: [
-            { id: 101, title: 'Design wireframes', completed: true, dueDate: '2016-06-30' },
-            { id: 102, title: 'Prototype UI', completed: true, dueDate: '2016-07-08' },
-            { id: 103, title: 'Implement backend API', completed: false, dueDate: '2016-07-12' },
-            { id: 104, title: 'Set up CI/CD', completed: true, dueDate: '2016-07-15' },
-            { id: 105, title: 'User testing', completed: false, dueDate: '2016-08-01' },
-            { id: 106, title: 'Final review meeting', completed: false, dueDate: '2016-09-13' },
-            { id: 107, title: 'Deploy to production', completed: false, dueDate: '2016-09-15' },
+            { id: 101, title: 'Sistemare il profilo linkedin / indeed', completed: true, dueDate: '2028-06-30' },
+            { id: 102, title: 'Sistemare il curriculum', completed: true, dueDate: '2028-07-08' },
+            { id: 103, title: 'Mandare curriculum alle aziende o candidarsi tramite indeed/linkedin', completed: false, dueDate: '2028-07-12' },
+            { id: 104, title: 'Fare tutti i colloqui', completed: true, dueDate: '2028-07-15' },
+            { id: 105, title: 'Aspettare una risposta e valutare le varie offerte', completed: false, dueDate: '20287-08-01' },
+            // { id: 106, title: 'Final review meeting', completed: false, dueDate: '20287-09-13' },
+            // { id: 107, title: 'Deploy to production', completed: false, dueDate: '2028-09-15' },
         ]
     },
     {
@@ -24,17 +24,17 @@ const initialProjects = [
         name: 'Project Beta',
         description: 'Migration to Beta infrastructure.',
         color: 'green',
-        manager: 'Luca',
+        creatorID: 2,
         status: 'Planning',
-        dueDate: '2016-10-01',
+        dueDate: '2028-10-01',
         tasks: [
-            { id: 201, title: 'Prepare migration plan', completed: true, dueDate: '2016-07-01' },
-            { id: 202, title: 'Setup servers', completed: true, dueDate: '2016-07-10' },
-            { id: 203, title: 'Write migration scripts', completed: false, dueDate: '2016-07-18' },
-            { id: 204, title: 'QA environment test', completed: false, dueDate: '2016-08-01' },
-            { id: 205, title: 'Cut over data', completed: false, dueDate: '2016-09-01' },
-            { id: 206, title: 'Post-migration checks', completed: false, dueDate: '2016-09-14' },
-            { id: 207, title: 'Document new architecture', completed: false, dueDate: '2016-09-25' }
+            { id: 201, title: 'Prepare migration plan', completed: true, dueDate: '2028-07-01' },
+            { id: 202, title: 'Setup servers', completed: true, dueDate: '2028-07-10' },
+            { id: 203, title: 'Write migration scripts', completed: false, dueDate: '2028-07-18' },
+            { id: 204, title: 'QA environment test', completed: false, dueDate: '2028-08-01' },
+            { id: 205, title: 'Cut over data', completed: false, dueDate: '2028-09-01' },
+            { id: 206, title: 'Post-migration checks', completed: false, dueDate: '2028-09-14' },
+            { id: 207, title: 'Document new architecture', completed: false, dueDate: '2028-09-25' }
         ]
     },
     {
@@ -42,17 +42,17 @@ const initialProjects = [
         name: 'Project Gamma',
         description: 'Mobile app redesign for Gamma.',
         color: 'blue',
-        manager: 'Martina',
+        creatorID: 3,
         status: 'Active',
-        dueDate: '2016-11-20',
+        dueDate: '2028-11-20',
         tasks: [
-            { id: 301, title: 'Research user needs', completed: true, dueDate: '2016-07-05' },
-            { id: 302, title: 'Sketch new UI', completed: true, dueDate: '2016-07-18' },
-            { id: 303, title: 'Develop prototype', completed: false, dueDate: '2016-08-15' },
-            { id: 304, title: 'Iterate on feedback', completed: false, dueDate: '2016-09-03' },
-            { id: 305, title: 'Accessibility checks', completed: false, dueDate: '2016-09-15' },
-            { id: 306, title: 'Release candidate', completed: false, dueDate: '2016-11-10' },
-            { id: 307, title: 'App store deployment', completed: false, dueDate: '2016-11-20' }
+            { id: 301, title: 'Research user needs', completed: true, dueDate: '2028-07-05' },
+            { id: 302, title: 'Sketch new UI', completed: true, dueDate: '2028-07-18' },
+            { id: 303, title: 'Develop prototype', completed: false, dueDate: '2028-08-15' },
+            { id: 304, title: 'Iterate on feedback', completed: false, dueDate: '2028-09-03' },
+            { id: 305, title: 'Accessibility checks', completed: false, dueDate: '2028-09-15' },
+            { id: 306, title: 'Release candidate', completed: false, dueDate: '2028-11-10' },
+            { id: 307, title: 'App store deployment', completed: false, dueDate: '2028-11-20' }
         ]
     },
     {
@@ -60,17 +60,17 @@ const initialProjects = [
         name: 'Project Delta',
         description: 'Quarterly Marketing Push.',
         color: 'orange',
-        manager: 'Alessandro',
+        creatorID: 4,
         status: 'Completed',
-        dueDate: '2016-06-20',
+        dueDate: '2028-06-20',
         tasks: [
-            { id: 401, title: 'Campaign brainstorm', completed: true, dueDate: '2016-05-13' },
-            { id: 402, title: 'Create visuals', completed: true, dueDate: '2016-05-28' },
-            { id: 403, title: 'Schedule social posts', completed: true, dueDate: '2016-06-02' },
-            { id: 404, title: 'Send newsletter', completed: true, dueDate: '2016-06-03' },
-            { id: 405, title: 'Monitor campaign metrics', completed: true, dueDate: '2016-06-15' },
-            { id: 406, title: 'Client follow-up', completed: true, dueDate: '2016-06-18' },
-            { id: 407, title: 'Final campaign report', completed: true, dueDate: '2016-06-20' }
+            { id: 401, title: 'Campaign brainstorm', completed: true, dueDate: '2028-05-13' },
+            { id: 402, title: 'Create visuals', completed: true, dueDate: '2028-05-28' },
+            { id: 403, title: 'Schedule social posts', completed: true, dueDate: '2028-06-02' },
+            { id: 404, title: 'Send newsletter', completed: true, dueDate: '2028-06-03' },
+            { id: 405, title: 'Monitor campaign metrics', completed: true, dueDate: '2028-06-15' },
+            { id: 406, title: 'Client follow-up', completed: true, dueDate: '2028-06-18' },
+            { id: 407, title: 'Final campaign report', completed: true, dueDate: '2028-06-20' }
         ]
     },
     {
@@ -78,15 +78,15 @@ const initialProjects = [
         name: 'Project Epsilon',
         description: 'Research and development for Epsilon AI engine.',
         color: 'pink',
-        manager: 'Valeria',
+        creatorID: 5,
         status: 'Planning',
         dueDate: '2025-01-15',
         tasks: [
-            { id: 501, title: 'Literature review', completed: false, dueDate: '2016-08-10' },
-            { id: 502, title: 'Data collection', completed: false, dueDate: '2016-09-01' },
-            { id: 503, title: 'Initial model training', completed: false, dueDate: '2016-10-15' },
-            { id: 504, title: 'Test model benchmarks', completed: false, dueDate: '2016-11-10' },
-            { id: 505, title: 'Iterate model tuning', completed: false, dueDate: '2016-12-10' },
+            { id: 501, title: 'Literature review', completed: false, dueDate: '2028-08-10' },
+            { id: 502, title: 'Data collection', completed: false, dueDate: '2028-09-01' },
+            { id: 503, title: 'Initial model training', completed: false, dueDate: '2028-10-15' },
+            { id: 504, title: 'Test model benchmarks', completed: false, dueDate: '2028-11-10' },
+            { id: 505, title: 'Iterate model tuning', completed: false, dueDate: '2028-12-10' },
             { id: 506, title: 'Pilot project', completed: false, dueDate: '2025-01-10' },
             { id: 507, title: 'Results documentation', completed: false, dueDate: '2025-01-15' }
         ]
@@ -94,6 +94,39 @@ const initialProjects = [
 ];
 
 const AppContext = createContext(null);
+
+const initialUsers = [
+    {
+        id: 1,
+        name: "Simone",
+        surname: "Penza",
+        ruolo: "Developer"
+    },
+    {
+        id: 2,
+        name: "Mario",
+        surname: "Rossi",
+        ruolo: "Project Manager"
+    },
+    {
+        id: 3,
+        name: "Luca",
+        surname: "Bianchi",
+        ruolo: "Designer"
+    },
+    {
+        id: 4,
+        name: "Giulia",
+        surname: "Verdi",
+        ruolo: "Tester"
+    },
+    {
+        id: 5,
+        name: "Alessandro",
+        surname: "Russo",
+        ruolo: "DevOps"
+    }
+]
 
 export function AppProvider({ children }) {
     const [projects, setProjects] = useState(initialProjects);
@@ -116,8 +149,10 @@ export function AppProvider({ children }) {
         );
     };
 
+    const [users, setUsers] = useState(initialUsers);
+
     return (
-        <AppContext.Provider value={{ projects, setProjects, toggleTask }}>
+        <AppContext.Provider value={{ users, projects, setProjects, toggleTask }}>
             {children}
         </AppContext.Provider>
     );
