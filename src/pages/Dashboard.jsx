@@ -38,8 +38,8 @@ export default function Dashboard() {
     );
   }, 0);
 
-  {/* (100 * TC) / TT */ }
-  const tasksPercentage = (100 * totalTasksCompleted / totalTasksToDo).toFixed(0)
+  // (100 * Completed Tasks) / Total Tasks
+  const tasksPercentage = totalTasks === 0 ? 0 : ((100 * totalTasksCompleted) / totalTasks).toFixed(0);
 
   return (
     <>

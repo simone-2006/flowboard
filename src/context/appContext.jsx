@@ -4,23 +4,7 @@ import useSound from 'use-sound';
 import dingSound from '../sound/Ding.mp3';
 
 const initialProjects = [
-    {
-        id: 1,
-        name: 'Cercare lavoro',
-        description: 'Organizzare la ricerca di un lavoro e tenere traccia delle candidature.',
-        color: 'blue',
-        creatorID: 1,
-        status: 'Active',
-        dueDate: '2026-09-30',
-        tasks: [
-            { id: 101, title: 'Sistemare il curriculum', completed: true, dueDate: '2026-08-20' },
-            { id: 102, title: 'Aggiornare LinkedIn', completed: true, dueDate: '2026-08-21' },
-            { id: 103, title: 'Cercare aziende interessanti', completed: true, dueDate: '2026-08-25' },
-            { id: 104, title: 'Mandare le prime candidature', completed: false, dueDate: '2026-08-28' },
-            { id: 105, title: 'Prepararsi per i colloqui', completed: false, dueDate: '2026-09-05' },
-            { id: 106, title: 'Fare il punto sulle candidature', completed: false, dueDate: '2026-09-15' }
-        ]
-    },
+
 
     {
         id: 2,
@@ -110,7 +94,25 @@ const initialProjects = [
             { id: 605, title: 'Preparare caricabatterie e cuffie', completed: true, dueDate: '2026-07-27' },
             { id: 606, title: 'Partire', completed: true, dueDate: '2026-07-28' }
         ]
-    }
+    },
+    
+    {
+        id: 1,
+        name: 'Cercare lavoro',
+        description: 'Organizzare la ricerca di un lavoro e tenere traccia delle candidature.',
+        color: 'blue',
+        creatorID: 1,
+        status: 'Active',
+        dueDate: '2026-09-30',
+        tasks: [
+            { id: 101, title: 'Sistemare il curriculum', completed: true, dueDate: '2026-08-20' },
+            { id: 102, title: 'Aggiornare LinkedIn', completed: true, dueDate: '2026-08-21' },
+            { id: 103, title: 'Cercare aziende interessanti', completed: true, dueDate: '2026-08-25' },
+            { id: 104, title: 'Mandare le prime candidature', completed: false, dueDate: '2026-08-28' },
+            { id: 105, title: 'Prepararsi per i colloqui', completed: false, dueDate: '2026-09-05' },
+            { id: 106, title: 'Fare il punto sulle candidature', completed: false, dueDate: '2026-09-15' }
+        ]
+    },
 ];
 
 const AppContext = createContext(null);
