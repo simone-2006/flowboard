@@ -199,6 +199,41 @@ export function AppProvider({ children }) {
         }
     };
 
+    const addTaskToProject = (projectID, taskName, taskDue) => {
+        if (taskName === "") {
+            showAlert("Error task name can't be empty", "error")
+            return 0
+        }
+        if (taskDue === "") {
+            showAlert("Error task due date can't be empty", "error")
+            return 0
+        }
+
+        setProjects(prev =>
+            prev.map(project =>
+                project.id !== projectID
+                    ? project
+                    : { ...project, tasks: [...project.tasks, { id: project.tasks.length + 1, title: taskName, dueDate: taskDue, completed: false }] }
+            )
+        );
+        showAlert("Task added to project", "success");
+        playDing();
+        return 1;
+    }
+
+    const deleteTask = (projectID, taskID) => {
+        setProjects(prev =>
+            prev.map(project =>
+                project.id !== projectID
+                    ? project
+                    : { ...project, tasks: project.tasks.filter(task => task.id !== taskID) }
+            )
+        );
+        showAlert("Task deleted from project", "success");
+        playDing();
+        return 1;
+    }
+
     // Funzione per aggiungere un nuovo progetto all'elenco dei progetti
     const addProject = (newProject) => {
         // Otteniamo un nuovo ID incrementale
@@ -226,7 +261,7 @@ export function AppProvider({ children }) {
     const [users, setUsers] = useState(initialUsers);
 
     return (
-        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject }}>
+        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject, addTaskToProject, deleteTask }}>
             {children}
         </AppContext.Provider>
     );

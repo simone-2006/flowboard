@@ -6,7 +6,7 @@ import ProjectStatusChip from "./ProjectStatusChip";
 
 
 import { useState } from "react";
-import { Trash, SquarePen, Plus, Minus } from 'lucide-react';
+import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
 
 import { useAppContext } from "../../context/appContext";
 
@@ -26,6 +26,8 @@ export default function ProjectCard(
     }
 ) {
     const [addTaskOpen, setAddTaskOpen] = useState(false);
+    const [newTaskName, setNewTaskName] = useState("");
+    const [newTaskDue, setNewTaskDue] = useState("");
 
     const handleOpenAddTask = () => {
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
@@ -45,7 +47,23 @@ export default function ProjectCard(
     // Il calcolo corretto: completed / total * 100
     const tasksPercentage = totalTask === 0 ? 0 : ((100 * taskCompleted) / totalTask).toFixed(0);
 
+    const { addTaskToProject } = useAppContext();
+    const { deleteTask } = useAppContext();
+
+    function handleAddTask() {
+        if (addTaskToProject(id, newTaskName, newTaskDue)) {
+            setAddTaskOpen(false)
+            setNewTaskName("")
+            setNewTaskDue("")
+        }
+    }
+
+    function handleDeleteTask(projectID, taskID) {
+        deleteTask(projectID, taskID)
+    }
+
     const { users } = useAppContext();
+
 
     return (
         <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transition-shadow hover:shadow-xl">
@@ -78,7 +96,7 @@ export default function ProjectCard(
                         if (creatorID === authUserData.id) {
                             return <span className="ml-1">you ({creator.name} {creator.surname})</span>;
                         }
-                   
+
                         // console.log(authUserData.id)
                         return creator
                             ? <span className="ml-1">{creator.name} {creator.surname}</span>
@@ -111,21 +129,20 @@ export default function ProjectCard(
                     <TaskCompletionProgressBar percentage={tasksPercentage} />
                 </div>
             </div>
-       
+
 
             {/* Tasks Table */}
             <div className="rounded-lg bg-gray-50 p-3 mt-2 border border-gray-100 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
                     <h2 className="text-base font-bold text-gray-900 tracking-tight">Tasks</h2>
-                    {/* TODO: bottone add task non so se starà qua o nella modifica del progetto */}
-                    {/* <Button
+                    <Button
                         variant="ghostPrimary"
                         icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
                         onClick={handleOpenAddTask}
                         className="transition hover:bg-purple-100"
                     >
                         {addTaskOpen ? "Close" : "Add task"}
-                    </Button> */}
+                    </Button>
                 </div>
                 <div className="overflow-x-auto rounded">
                     <table className="w-full text-sm border-separate border-spacing-y-1">
@@ -134,6 +151,7 @@ export default function ProjectCard(
                                 <th className="text-left px-2 py-1 rounded-l">Title</th>
                                 <th className="text-left px-2 py-1">Due date</th>
                                 <th className="text-left px-2 py-1 rounded-r">Completed</th>
+                                <th className="text-left px-2 py-1 rounded-r">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -161,23 +179,33 @@ export default function ProjectCard(
                                         })()}
                                     </td>
                                     <td className="px-2 py-1">
-                                        <div className="flex justify-center">
+                                        <div className="flex justify-start">
                                             <TaskCheckbox
                                                 checked={task.completed}
                                                 onChange={() => toggleTask(id, task.id)}
                                             />
                                         </div>
                                     </td>
+                                    <td className="px-2 py-1">
+                                        <button
+                                            className="text-red-600 cursor-pointer" title="Delete task"
+                                            onClick={() => handleDeleteTask(id, task.id)}
+                                        >
+                                            <X size={18} />
+                                        </button>
+                                    </td>
+
                                 </tr>
                             ))}
                             {addTaskOpen && (
                                 <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
-                                    <td className="px-2 py-0.5"><Input placeholder="Task title..." /></td>
-                                    <td className="px-2 py-0.5"><Input placeholder="YYYY-MM-DD" /></td>
-                                    <td className="px-2 py-0.5">
-                                        <div className="flex justify-center opacity-50 cursor-not-allowed">
-                                            <TaskCheckbox checked={false} disabled={true} />
-                                        </div>
+                                    <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
+                                    <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
+                                    <td></td>
+                                    <td className="px-2 py-0.5 flex justify-start items-center">
+                                        <Button onClick={handleAddTask}>
+                                            Add
+                                        </Button>
                                     </td>
                                 </tr>
                             )}
@@ -186,6 +214,6 @@ export default function ProjectCard(
                 </div>
             </div>
         </div>
-  
+
     );
 }

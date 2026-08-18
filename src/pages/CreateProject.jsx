@@ -2,8 +2,9 @@ import Page from "../components/layout/Page";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import Select from "../components/ui/Select";
+import TaskCheckbox from "../components/projects/TaskCheckbox";
 
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Plus, Minus, X } from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
 
@@ -20,11 +21,55 @@ export default function CreateProject() {
     const [color, setColor] = useState("#ffd000");
     const [dueDate, setDueDate] = useState("");
     const [status, setStatus] = useState("active");
-    const [tasks, setTasks] = useState([]) //TODO: task
+    const [tasks, setTasks] = useState([]);
 
-    const { projects } = useAppContext();
+    const [addTaskOpen, setAddTaskOpen] = useState(false);
+    const [newTaskName, setNewTaskName] = useState("");
+    const [newTaskDue, setNewTaskDue] = useState("");
 
     const { addProject } = useAppContext();
+
+    const handleOpenAddTask = () => {
+        addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
+    };
+
+    function handleAddTask() {
+        if (newTaskName === "") {
+            showAlert("Error task name can't be empty", "error")
+            return
+        }
+        if (newTaskDue === "") {
+            showAlert("Error task due date can't be empty", "error")
+            return
+        }
+
+        setTasks(prev => [
+            ...prev,
+            {
+                id: prev.length > 0 ? Math.max(...prev.map(t => t.id)) + 1 : 1,
+                title: newTaskName,
+                dueDate: newTaskDue,
+                completed: false
+            }
+        ]);
+        setAddTaskOpen(false)
+        setNewTaskName("")
+        setNewTaskDue("")
+    }
+
+    function handleDeleteTask(taskID) {
+        setTasks(prev => prev.filter(task => task.id !== taskID))
+    }
+
+    function handleToggleTask(taskID) {
+        setTasks(prev =>
+            prev.map(task =>
+                task.id !== taskID
+                    ? task
+                    : { ...task, completed: !task.completed }
+            )
+        )
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -36,8 +81,8 @@ export default function CreateProject() {
             tasks,
             status
         };
-        addProject(newProject) ? navigate("/projects") : showAlert("error", "Error");
-        
+        addProject(newProject) ? navigate("/projects") : showAlert("Error", "error");
+
     };
 
     return (
@@ -82,8 +127,89 @@ export default function CreateProject() {
                         <option value="planning">Planning</option>
                     </Select>
                 </div>
+                <div className="rounded-lg bg-gray-50 p-3 mt-2 mb-4 border border-gray-100 shadow-sm">
+                    <div className="flex items-center justify-between mb-2">
+                        <h2 className="text-base font-bold text-gray-900 tracking-tight">Tasks</h2>
+                        <Button
+                            variant="ghostPrimary"
+                            icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
+                            onClick={handleOpenAddTask}
+                            className="transition hover:bg-purple-100"
+                        >
+                            {addTaskOpen ? "Close" : "Add task"}
+                        </Button>
+                    </div>
+                    <div className="overflow-x-auto rounded">
+                        <table className="w-full text-sm border-separate border-spacing-y-1">
+                            <thead>
+                                <tr className="bg-gray-100">
+                                    <th className="text-left px-2 py-1 rounded-l">Title</th>
+                                    <th className="text-left px-2 py-1">Due date</th>
+                                    <th className="text-left px-2 py-1 rounded-r">Completed</th>
+                                    <th className="text-left px-2 py-1 rounded-r">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {tasks.map(task => (
+                                    <tr key={task.id} className="group hover:bg-blue-50 border-b border-gray-200 transition-colors">
+                                        <td className="px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                        <td className="px-2 py-1">
+                                            {task.dueDate
+                                                ? (() => {
+                                                    const d = new Date(task.dueDate);
+                                                    const day = String(d.getDate()).padStart(2, '0');
+                                                    const month = String(d.getMonth() + 1).padStart(2, '0');
+                                                    const year = d.getFullYear();
+                                                    return `${day}/${month}/${year}`;
+                                                })()
+                                                : '-'
+                                            }
+                                            {task.dueDate && (() => {
+                                                const currentDate = new Date();
+                                                const dueDate = new Date(task.dueDate);
+                                                if (dueDate < currentDate && !task.completed) {
+                                                    return <span className="text-red-600 font-bold ml-1 animate-pulse">!</span>;
+                                                }
+                                                return null;
+                                            })()}
+                                        </td>
+                                        <td className="px-2 py-1">
+                                            <div className="flex justify-start">
+                                                <TaskCheckbox
+                                                    checked={task.completed}
+                                                    onChange={() => handleToggleTask(task.id)}
+                                                />
+                                            </div>
+                                        </td>
+                                        <td className="px-2 py-1">
+                                            <button
+                                                type="button"
+                                                className="text-red-600 cursor-pointer" title="Delete task"
+                                                onClick={() => handleDeleteTask(task.id)}
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                                {addTaskOpen && (
+                                    <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
+                                        <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
+                                        <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
+                                        <td></td>
+                                        <td className="px-2 py-0.5 flex justify-start items-center">
+                                            <Button onClick={handleAddTask}>
+                                                Add
+                                            </Button>
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div className="flex items-center gap-1">
-                    <Link to="/projects"><Button variant="ghost" icon={<ChevronLeft size={18}/>}>Back</Button></Link>
+                    <Link to="/projects"><Button variant="ghost" icon={<ChevronLeft size={18} />}>Back</Button></Link>
                     <Button type="submit" variant="primary" onClick={handleSubmit}>Create Project</Button>
                 </div>
             </form>
