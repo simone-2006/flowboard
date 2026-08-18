@@ -44,6 +44,11 @@ export default function Dashboard() {
   return (
     <>
       <Page>
+        {/* UN BANNER WORK IN PROGRESS GIGANTE */}
+        <div className="bg-yellow-500 text-white p-4 rounded-lg mb-4">
+          <p className="font-bold text-xl">Work in progress</p>
+          <p className="text-sm">This project is a work in progress.</p>
+        </div>
         <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Dashboard</h3>
         <div className="grid grid-cols-3">
           <DashboardCard cardTitle="Total projects">
