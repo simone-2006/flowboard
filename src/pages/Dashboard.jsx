@@ -50,19 +50,19 @@ export default function Dashboard() {
           <p className="font-bold text-xl">Work in progress</p>
           <p className="text-sm">This project is a work in progress.</p>
         </div> */}
-        <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Dashboard</h3>
+        <h3 className="font-bold text-2xl my-2 flex items-center justify-between text-black dark:text-white">Dashboard</h3>
         <div className="grid grid-cols-3">
           <DashboardCard cardTitle="Total projects">
-            <p className="font-bold text-xl text-amber-600">{totalProjects}</p>
+            <p className="font-bold text-xl text-amber-600 dark:text-amber-400">{totalProjects}</p>
           </DashboardCard>
           <DashboardCard cardTitle="Total task to do">
-            <p className="font-bold text-xl text-blue-600">{totalTasksToDo}</p>
+            <p className="font-bold text-xl text-blue-600 dark:text-blue-400">{totalTasksToDo}</p>
           </DashboardCard>
           <DashboardCard cardTitle="Total task completed">
-            <p className="font-bold text-xl text-green-600">{totalTasksCompleted}</p>
+            <p className="font-bold text-xl text-green-600 dark:text-green-400">{totalTasksCompleted}</p>
           </DashboardCard>
           <DashboardCard cardTitle="Total task overdue">
-            <p className="font-bold text-xl text-red-600">{totalOverdueTasks}</p>
+            <p className="font-bold text-xl text-red-600 dark:text-red-400">{totalOverdueTasks}</p>
           </DashboardCard>
         </div>
         <LastActivityCard />

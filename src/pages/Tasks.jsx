@@ -6,7 +6,7 @@ import Page from "../components/layout/Page";
 export default function Tasks() {
   return (
     <Page>
-      <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Tasks</h3>
+      <h3 className="font-bold text-2xl my-2 text-black dark:text-white flex items-center justify-between text-black dark:text-white">Tasks</h3>
 
     </Page>
   );

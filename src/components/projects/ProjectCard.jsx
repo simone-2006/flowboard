@@ -76,15 +76,15 @@ export default function ProjectCard(
 
 
     return (
-        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-100 transition-shadow hover:shadow-xl">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-xl">
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex gap-3 items-center">
                     <div
-                        className="h-4 w-4 rounded-full border-2 border-white shadow"
+                        className="h-4 w-4 rounded-full border-2 border-gray-200 dark:border-gray-600"
                         style={{ backgroundColor: color }}
                     ></div>
-                    <h1 className="text-2xl font-bold tracking-tight">{name}</h1>
+                    <h1 className="text-2xl font-bold tracking-tight text-black dark:text-white">{name}</h1>
                     <ProjectStatusChip status={status} />
                 </div>
                 <div className="flex items-center gap-2">
@@ -94,12 +94,12 @@ export default function ProjectCard(
             </div>
 
             {/* Description */}
-            <p className="text-sm text-gray-500 mb-2 italic">{description}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-300 mb-2 italic">{description}</p>
 
             {/* Meta Info Row */}
-            <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
+            <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-3">
                 <span>
-                    <span className="font-medium text-gray-700">Created by: </span>
+                    <span className="font-medium text-gray-700 dark:text-gray-300">Created by: </span>
                     {(() => {
                         const creator = users.find(user => user.id === creatorID);
 
@@ -110,7 +110,7 @@ export default function ProjectCard(
                         // console.log(authUserData.id)
                         return creator
                             ? <span className="ml-1">{creator.name} {creator.surname}</span>
-                            : <span className="ml-1 text-gray-400">Unknown</span>;
+                            : <span className="ml-1 text-gray-400 dark:text-gray-500">Unknown</span>;
                     })()}
                 </span>
                 <span>
@@ -123,11 +123,11 @@ export default function ProjectCard(
 
             {/* Progress and Stats */}
             <div className="flex items-center justify-between">
-                <div className="flex items-center justify-between text-sm mb-1">
+                <div className="flex items-center justify-between text-sm mb-1 text-black dark:text-white">
                     <div>
-                        <span>Task completed:</span>
-                        <span className="font-semibold ml-1">{taskCompleted}</span>
-                        <span className="text-gray-400">/</span>
+                        <span className="">Task completed:</span>
+                        <span className="font-semibold ml-1 ">{taskCompleted}</span>
+                        <span className="text-gray-400 dark:text-gray-500">/</span>
                         <span className="font-semibold">{totalTask}</span>
                     </div>
                 </div>
@@ -138,9 +138,9 @@ export default function ProjectCard(
 
 
             {/* Tasks Table */}
-            <div className="rounded-lg bg-gray-50 p-3 mt-2 border border-gray-100 shadow-sm">
+            <div className="rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mt-2 border border-gray-100 dark:border-gray-600 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-base font-bold text-gray-900 tracking-tight">Tasks</h2>
+                    <h2 className="text-base font-bold text-black dark:text-white tracking-tight">Tasks</h2>
                     <Button
                         variant="ghostPrimary"
                         icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
@@ -153,7 +153,7 @@ export default function ProjectCard(
                 <div className="overflow-x-auto rounded">
                     <table className="w-full text-sm border-separate border-spacing-y-1">
                         <thead>
-                            <tr className="bg-gray-100">
+                            <tr className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
                                 <th className="text-left px-2 py-1 rounded-l">Title</th>
                                 <th className="text-left px-2 py-1">Due date</th>
                                 <th className="text-left px-2 py-1 rounded-r">Completed</th>
@@ -164,10 +164,10 @@ export default function ProjectCard(
                             {tasks.map(task => (
                                 <tr
                                     key={task.id}
-                                    className={`group hover:bg-blue-50 border-b border-gray-200 transition-colors ${task.completed ? " bg-green-200/60" : ""}`}
+                                    className={`group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors text-gray-900 dark:text-gray-200 ${task.completed ? " bg-green-200/60 dark:bg-green-900/40" : ""}`}
                                 >
 
-                                    <td className="px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                    <td className="px-2 py-1 font-medium ">{task.title}</td>
                                     <td className="px-2 py-1">
                                         {task.dueDate
                                             ? (() => {
@@ -179,7 +179,7 @@ export default function ProjectCard(
                                             const currentDate = new Date();
                                             const dueDate = new Date(task.dueDate);
                                             if (dueDate < currentDate && !task.completed) {
-                                                return <span className="text-red-600 font-bold ml-1 animate-pulse">!</span>;
+                                                return <span className="text-red-600 dark:text-red-400 font-bold ml-1 animate-pulse">!</span>;
                                             }
                                             return null;
                                         })()}
@@ -194,7 +194,7 @@ export default function ProjectCard(
                                     </td>
                                     <td className="px-2 py-1">
                                         <button
-                                            className="text-red-600 cursor-pointer" title="Delete task"
+                                            className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
                                             onClick={() => handleDeleteTask(task.id)}
                                         >
                                             <X size={18} />
@@ -204,7 +204,7 @@ export default function ProjectCard(
                                 </tr>
                             ))}
                             {addTaskOpen && (
-                                <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
+                                <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600 animate-fade-in">
                                     <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
                                     <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
                                     <td></td>

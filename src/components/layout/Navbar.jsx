@@ -52,9 +52,9 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 {/* User data: */}
-                <div className='flex flex-col border-r border-gray-200 pr-3'>
-                    <span className='text-sm font-bold'>{authUserData.name} {authUserData.surname}</span>
-                    <span className='text-xs text-gray-500'>{authUserData.role}</span>
+                <div className='flex flex-col border-r border-gray-200 dark:border-gray-700 pr-3'>
+                    <span className='text-sm font-bold text-gray-900 dark:text-white'>{authUserData.name} {authUserData.surname}</span>
+                    <span className='text-xs text-gray-500 dark:text-gray-400'>{authUserData.role}</span>
                 </div>
                 <Link to="/settings">
                     <Button icon={<Settings />} variant='ghost' />

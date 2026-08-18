@@ -6,7 +6,7 @@ import Page from "../components/layout/Page";
 export default function ProjectsDetail() {
   return (
     <Page>
-      <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Project detail</h3>
+      <h3 className="font-bold text-2xl my-2 text-black dark:text-white flex items-center justify-between text-black dark:text-white">Project detail</h3>
 
     </Page>
   );

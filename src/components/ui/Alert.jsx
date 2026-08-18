@@ -42,16 +42,16 @@ export default function Alert({ variant = "success", children, onClose }) {
         info: <Info size={18} />
     };
     const variantClasses = {
-        success: "text-green-600",
-        danger: "text-amber-600",
-        error: "text-red-600",
-        info: "text-gray-600"
+        success: "text-green-600 dark:text-green-400",
+        danger: "text-amber-600 dark:text-amber-400",
+        error: "text-red-600 dark:text-red-400",
+        info: "text-gray-600 dark:text-gray-300"
     };
 
     return (
         <div
             ref={alertRef}
-            className={`bg-white dark:bg-gray-900 py-2 rounded-md flex items-center gap-2 px-2 font-base ${variantClasses[variant] || ""} ${baseAnim} ${showAnim}`}
+            className={`bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 py-2 rounded-md flex items-center gap-2 px-2 font-base ${variantClasses[variant] || ""} ${baseAnim} ${showAnim}`}
         >
             {variantIcon[variant] || null}
             {children}

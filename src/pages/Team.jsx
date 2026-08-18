@@ -11,7 +11,7 @@ export default function Team() {
 
   return (
     <Page>
-      <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Team</h3>
+      <h3 className="font-bold text-2xl my-2 text-black dark:text-white flex items-center justify-between text-black dark:text-white">Team</h3>
 
     </Page>
   );
