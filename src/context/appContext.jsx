@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import useSound from 'use-sound';
 import dingSound from '../sound/Ding.mp3';
 
+const AppContext = createContext(null);
+
 const initialProjects = [
 
 
@@ -117,8 +119,6 @@ const initialProjects = [
     },
 ];
 
-const AppContext = createContext(null);
-
 const initialUsers = [
     {
         id: 1,
@@ -150,13 +150,22 @@ const initialUsers = [
         surname: "Russo",
         role: "DevOps"
     }
+];
+
+const usersActivities = [
+    {
+        id: 1,
+        userId: 1,
+        projectId: 1,
+        taskId: 1,
+        activityDescription: "Completed task",
+        timeStamp: "10-10-2026"
+    },
 ]
 
 export function AppProvider({ children }) {
     {/* Auth */ }
     {/* Autenticazione per ora sarà finta, e saremo dentro con l'utente che ha id 1 */ }
-    //corretto la gestione dello stato di authUserData evitando di chiamare setAuthUserData direttamente nel body del componente (che causerebbe cicli infiniti e warning di React). 
-    // Ora viene inizializzato con l'utente di default (id 1) e aggiornato tramite useEffect ogni volta che authUserID cambia.
     const [authUserID, setAuthUserID] = useState(2);
     const [authUserData, setAuthUserData] = useState(
         initialUsers.find(user => user.id === 1)
@@ -192,10 +201,13 @@ export function AppProvider({ children }) {
         if (updatedTask && !updatedTask.completed) {
             showAlert("Task marked as completed", "success");
             playDing();
+            return "completed"
         } else if (updatedTask && updatedTask.completed) {
             showAlert("Task marked as incomplete", "info");
+            return "incomplete"
         } else {
             showAlert("Task not found", "warning");
+            return "error"
         }
     };
 
@@ -260,8 +272,37 @@ export function AppProvider({ children }) {
     {/* USERS */ }
     const [users, setUsers] = useState(initialUsers);
 
+    {/* USERS ACTIVITIES */ }
+    const [usersActivities, setUsersActivities] = useState(null);
+
+    const createUserActivity = (
+        userId,
+        projectId,
+        taskId,
+        activityDescription,
+        timeStamp
+    ) => {
+        setUsersActivities(prev => {
+            const prevArray = Array.isArray(prev) ? prev : [];
+            return [
+                ...prevArray,
+                {
+                    id: prevArray.length + 1,
+                    userId,
+                    projectId,
+                    taskId,
+                    activityDescription,
+                    timeStamp
+                }
+            ];
+        });
+        console.log(usersActivities);
+        return 1;
+    }
+
+
     return (
-        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject, addTaskToProject, deleteTask }}>
+        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject, addTaskToProject, deleteTask, createUserActivity }}>
             {children}
         </AppContext.Provider>
     );

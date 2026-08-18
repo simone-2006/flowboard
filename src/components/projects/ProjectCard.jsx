@@ -5,12 +5,13 @@ import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
 
 import { useAppContext } from "../../context/appContext";
 
 import { showAlert } from "../ui/Alert";
+import { getNow } from "../../utils/functions";
 
 
 export default function ProjectCard(
@@ -25,41 +26,50 @@ export default function ProjectCard(
         status
     }
 ) {
+    {/* AUTH USER + USER ACTIVITIES */ }
+    const { authUserData } = useAppContext();
+    const { createUserActivity } = useAppContext()
+
+    const totalTask = tasks.length;
+    const taskCompleted = tasks.filter(task => task.completed).length;
+    const taskTodo = tasks.filter(task => !task.completed).length;
+    const tasksPercentage = totalTask === 0 ? 0 : ((100 * taskCompleted) / totalTask).toFixed(0);
+
+
     const [addTaskOpen, setAddTaskOpen] = useState(false);
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDue, setNewTaskDue] = useState("");
 
     const handleOpenAddTask = () => {
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
-        console.log(addTaskOpen)
     };
 
     const { toggleTask } = useAppContext();
 
-    const { authUserData } = useAppContext();
+    const handleToggleTask = (taskID) => {
+        {/* Funzione per fare il toggle tra completata e non */ }
+        toggleTask(id, taskID) === "completed"
+            ? createUserActivity(authUserData.id, id, taskID, "Completed a task", getNow())
+            : ""
+    }
 
-
-    const totalTask = tasks.length;
-    const taskCompleted = tasks.filter(task => task.completed).length;
-    const taskTodo = tasks.filter(task => !task.completed).length;
-
-    // (100 * TC) / TT  -> Percentuale di task completate su tutte le task
-    // Il calcolo corretto: completed / total * 100
-    const tasksPercentage = totalTask === 0 ? 0 : ((100 * taskCompleted) / totalTask).toFixed(0);
 
     const { addTaskToProject } = useAppContext();
-    const { deleteTask } = useAppContext();
-
     function handleAddTask() {
         if (addTaskToProject(id, newTaskName, newTaskDue)) {
+            createUserActivity(authUserData.id, id, "", `Created a new task: ${newTaskName}`, getNow())
+
             setAddTaskOpen(false)
             setNewTaskName("")
             setNewTaskDue("")
         }
     }
 
-    function handleDeleteTask(projectID, taskID) {
-        deleteTask(projectID, taskID)
+    const { deleteTask } = useAppContext();
+    function handleDeleteTask(taskID) {
+        if (deleteTask(id, taskID)) {
+            createUserActivity(authUserData.id, id, taskID, `Deleted a task`, getNow())
+        }
     }
 
     const { users } = useAppContext();
@@ -182,14 +192,14 @@ export default function ProjectCard(
                                         <div className="flex justify-start">
                                             <TaskCheckbox
                                                 checked={task.completed}
-                                                onChange={() => toggleTask(id, task.id)}
+                                                onChange={() => handleToggleTask(task.id)}
                                             />
                                         </div>
                                     </td>
                                     <td className="px-2 py-1">
                                         <button
                                             className="text-red-600 cursor-pointer" title="Delete task"
-                                            onClick={() => handleDeleteTask(id, task.id)}
+                                            onClick={() => handleDeleteTask(task.id)}
                                         >
                                             <X size={18} />
                                         </button>
