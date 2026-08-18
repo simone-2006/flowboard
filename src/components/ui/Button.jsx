@@ -4,7 +4,7 @@ export default function Button({ variant = "primary", icon = "", children, onCli
     const variantClass = {
         primary: "bg-blue-500 text-white hover:bg-blue-600",
         ghost: "bg-transparent text-gray-800 hover:bg-gray-100 shadow-xs",
-        ghostPrimary : "bg-transparent text-blue-500 hover:bg-blue-200",
+        ghostPrimary : "bg-transparent text-blue-500 hover:bg-blue-100",
         danger: "bg-red-500 text-white hover:bg-red-600",
         success: "bg-green-500 text-white hover:bg-green-600",
         warning: "bg-yellow-400 text-black hover:bg-yellow-500"

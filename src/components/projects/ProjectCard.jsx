@@ -34,6 +34,8 @@ export default function ProjectCard(
 
     const { toggleTask } = useAppContext();
 
+    const { authUserData } = useAppContext();
+
 
     const totalTask = tasks.length;
     const taskCompleted = tasks.filter(task => task.completed).length;
@@ -72,6 +74,12 @@ export default function ProjectCard(
                     <span className="font-medium text-gray-700">Created by: </span>
                     {(() => {
                         const creator = users.find(user => user.id === creatorID);
+
+                        if (creatorID === authUserData.id) {
+                            return <span className="ml-1">you ({creator.name} {creator.surname})</span>;
+                        }
+                   
+                        // console.log(authUserData.id)
                         return creator
                             ? <span className="ml-1">{creator.name} {creator.surname}</span>
                             : <span className="ml-1 text-gray-400">Unknown</span>;
@@ -109,14 +117,15 @@ export default function ProjectCard(
             <div className="rounded-lg bg-gray-50 p-3 mt-2 border border-gray-100 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
                     <h2 className="text-base font-bold text-gray-900 tracking-tight">Tasks</h2>
-                    <Button
+                    {/* TODO: bottone add task non so se starà qua o nella modifica del progetto */}
+                    {/* <Button
                         variant="ghostPrimary"
                         icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
                         onClick={handleOpenAddTask}
                         className="transition hover:bg-purple-100"
                     >
                         {addTaskOpen ? "Close" : "Add task"}
-                    </Button>
+                    </Button> */}
                 </div>
                 <div className="overflow-x-auto rounded">
                     <table className="w-full text-sm border-separate border-spacing-y-1">

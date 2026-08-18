@@ -1,7 +1,13 @@
 import Page from "../components/layout/Page";
 import Input from "../components/ui/Input";
+import Button from "../components/ui/Button";
+import { Plus } from 'lucide-react';
+
+
 import ProjectCard from "../components/projects/ProjectCard";
 import { Search } from 'lucide-react'
+
+import { Link } from "react-router-dom";
 
 import { useAppContext } from "../context/appContext";
 import { useState } from "react";
@@ -23,7 +29,19 @@ export default function Projects() {
     return (
         <Page>
             <div className="flex items-center justify-between">
-                <h3 className="font-bold text-2xl my-2">Projects</h3>
+
+                <div className="flex items-center gap-2">
+                    <h3 className="font-bold text-2xl my-2">Projects</h3>
+                    <Link to="/createproject">
+                        <Button
+                            variant="ghostPrimary"
+                            icon={<Plus size={18} />}
+                        >
+                            Create new project
+                        </Button>
+                    </Link>
+                </div>
+
                 <Input
                     icon={<Search size={18} />}
                     placeholder="Search or filter projects..."

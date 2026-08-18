@@ -8,6 +8,7 @@ import Projects from "./pages/Projects"
 import Tasks from "./pages/Tasks"
 import Team from "./pages/Team"
 import Settings from "./pages/Settings"
+import CreateProject from './pages/CreateProject';
 
 import Alert from './components/ui/Alert';
 import { showAlert } from './components/ui/Alert';
@@ -28,6 +29,7 @@ export default function App() {
             <Route path="/tasks" element={<Tasks />} />
             <Route path="/team" element={<Team />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/createproject" element={<CreateProject />} />
           </Routes>
         </Router>
       </AppProvider>

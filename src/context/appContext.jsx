@@ -1,5 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import { showAlert } from '../components/ui/Alert';
+import { useEffect } from 'react';
+
 import useSound from 'use-sound';
 import dingSound from '../sound/Ding.mp3';
 
@@ -12,7 +14,7 @@ const initialProjects = [
         description: 'Mettere in ordine le cose da fare durante la settimana.',
         color: 'green',
         creatorID: 1,
-        status: 'Active',
+        status: 'active',
         dueDate: '2026-08-23',
         tasks: [
             { id: 201, title: 'Fare la spesa', completed: true, dueDate: '2026-08-17' },
@@ -30,7 +32,7 @@ const initialProjects = [
         description: 'Sviluppare un piccolo progetto per fare pratica con React.',
         color: 'purple',
         creatorID: 1,
-        status: 'Active',
+        status: 'active',
         dueDate: '2026-08-25',
         tasks: [
             { id: 301, title: 'Creare il progetto con Vite', completed: true, dueDate: '2026-08-17' },
@@ -50,7 +52,7 @@ const initialProjects = [
         description: 'Organizzare tutto quello che serve per una serata con amici.',
         color: 'orange',
         creatorID: 1,
-        status: 'Planning',
+        status: 'planning',
         dueDate: '2026-08-29',
         tasks: [
             { id: 401, title: 'Decidere dove andare', completed: true, dueDate: '2026-08-20' },
@@ -67,7 +69,7 @@ const initialProjects = [
         description: 'Fare un po’ di manutenzione e sistemare le cose lasciate indietro.',
         color: 'red',
         creatorID: 1,
-        status: 'Planning',
+        status: 'planning',
         dueDate: '2026-09-05',
         tasks: [
             { id: 501, title: 'Fare il backup dei file importanti', completed: false, dueDate: '2026-08-24' },
@@ -95,14 +97,14 @@ const initialProjects = [
             { id: 606, title: 'Partire', completed: true, dueDate: '2026-07-28' }
         ]
     },
-    
+
     {
         id: 1,
         name: 'Cercare lavoro',
         description: 'Organizzare la ricerca di un lavoro e tenere traccia delle candidature.',
         color: 'blue',
         creatorID: 1,
-        status: 'Active',
+        status: 'active',
         dueDate: '2026-09-30',
         tasks: [
             { id: 101, title: 'Sistemare il curriculum', completed: true, dueDate: '2026-08-20' },
@@ -122,35 +124,49 @@ const initialUsers = [
         id: 1,
         name: "Simone",
         surname: "Penza",
-        ruolo: "Developer"
+        role: "Developer"
     },
     {
         id: 2,
         name: "Mario",
         surname: "Rossi",
-        ruolo: "Project Manager"
+        role: "Project Manager"
     },
     {
         id: 3,
         name: "Luca",
         surname: "Bianchi",
-        ruolo: "Designer"
+        role: "Designer"
     },
     {
         id: 4,
         name: "Giulia",
         surname: "Verdi",
-        ruolo: "Tester"
+        role: "Tester"
     },
     {
         id: 5,
         name: "Alessandro",
         surname: "Russo",
-        ruolo: "DevOps"
+        role: "DevOps"
     }
 ]
 
 export function AppProvider({ children }) {
+    {/* Auth */ }
+    {/* Autenticazione per ora sarà finta, e saremo dentro con l'utente che ha id 1 */ }
+    //corretto la gestione dello stato di authUserData evitando di chiamare setAuthUserData direttamente nel body del componente (che causerebbe cicli infiniti e warning di React). 
+    // Ora viene inizializzato con l'utente di default (id 1) e aggiornato tramite useEffect ogni volta che authUserID cambia.
+    const [authUserID, setAuthUserID] = useState(2);
+    const [authUserData, setAuthUserData] = useState(
+        initialUsers.find(user => user.id === 1)
+    );
+
+    useEffect(() => {
+        setAuthUserData(initialUsers.find(user => user.id === authUserID));
+    }, [authUserID]);
+
+    {/* PROJECTS */ }
     const [projects, setProjects] = useState(initialProjects);
 
     const [playDing] = useSound(dingSound);
@@ -183,10 +199,34 @@ export function AppProvider({ children }) {
         }
     };
 
+    // Funzione per aggiungere un nuovo progetto all'elenco dei progetti
+    const addProject = (newProject) => {
+        // Otteniamo un nuovo ID incrementale
+        const newId = projects.length > 0
+            ? Math.max(...projects.map(p => p.id)) + 1
+            : 1;
+
+        // Costruiamo un oggetto progetto completo includendo le proprietà richieste
+        const projectToAdd = {
+            ...newProject,
+            id: newId,             // Assegniamo il nuovo ID
+            creatorID: authUserID       // Prende id utente loggato
+        };
+
+        // Aggiorniamo lo stato dei progetti aggiungendo quello nuovo in coda
+        setProjects(prevProjects => [...prevProjects, projectToAdd]);
+
+        // Possibile punto per mostrare una notifica/toast o riprodurre un suono
+        showAlert('Project created successfully', 'success');
+        playDing();
+        return 1;
+    }
+
+    {/* USERS */ }
     const [users, setUsers] = useState(initialUsers);
 
     return (
-        <AppContext.Provider value={{ users, projects, setProjects, toggleTask }}>
+        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject }}>
             {children}
         </AppContext.Provider>
     );
