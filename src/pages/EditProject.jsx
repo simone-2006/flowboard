@@ -1,3 +1,8 @@
+{/*
+    ==================================== TODO =============================================
+    Per ora è solo una copia di create project
+*/}
+
 import Page from "../components/layout/Page";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
@@ -15,25 +20,23 @@ import { showAlert } from "../components/ui/Alert";
 
 import { getNow } from "../utils/functions";
 
-export default function CreateProject() {
+export default function EditProject() {
     {/* AUTH USER + USER ACTIVITIES */ }
     const { authUserData } = useAppContext();
     const { createUserActivity } = useAppContext()
 
     const navigate = useNavigate();
 
-    const [name, setName] = useState("New Project");
+    const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [color, setColor] = useState("#ffd000");
+    const [color, setColor] = useState("");
     const [dueDate, setDueDate] = useState("");
-    const [status, setStatus] = useState("active");
+    const [status, setStatus] = useState("");
     const [tasks, setTasks] = useState([]);
 
     const [addTaskOpen, setAddTaskOpen] = useState(false);
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDue, setNewTaskDue] = useState("");
-
-    const { addProject } = useAppContext();
 
     const handleOpenAddTask = () => {
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
@@ -77,33 +80,22 @@ export default function CreateProject() {
         )
     }
 
-    const handleCreateProject = (e) => {
-        e.preventDefault();
-        const newProject = {
-            name,
-            description,
-            color,
-            dueDate,
-            tasks,
-            status
-        };
-        createUserActivity(authUserData.id, "", "", `Created a new project: ${name}`, getNow())
-        addProject(newProject) ? navigate("/projects") : showAlert("Error", "error");
 
-    };
 
     return (
         <Page>
-            <h3 className="font-bold text-2xl my-2">Create a project</h3>
+            <h3 className="font-bold text-2xl my-2">Edit project (project name)</h3>
             <form>
                 <div className="mb-4">
-                    <label htmlFor="project-name" className="block mb-1 font-medium">Project name: <span className="text-red-500">*</span></label>
-                    <Input id="project-name" name="projectName" type="text" required value={name} onChange={e => setName(e.target.value)} />
+                    <label htmlFor="project-name" className="block mb-1 font-medium">Project name: </label>
+                    <Input id="project-name" name="projectName" type="text" required value={name} onChange={e => setName(e.target.value)} disabled/>
                 </div>
+
                 <div className="mb-4">
                     <label htmlFor="description" className="block mb-1 font-medium">Description:</label>
                     <Input id="description" name="description" type="text" value={description} onChange={e => setDescription(e.target.value)} />
                 </div>
+
                 <div className="mb-4 flex items-center gap-2">
                     <label htmlFor="color" className="block mb-1 font-medium">Color:</label>
                     <div className="flex">
@@ -217,7 +209,7 @@ export default function CreateProject() {
                 </div>
                 <div className="flex items-center gap-1">
                     <Link to="/projects"><Button variant="ghost" icon={<ChevronLeft size={18} />}>Back</Button></Link>
-                    <Button type="submit" variant="primary" onClick={handleCreateProject}>Create Project</Button>
+                    <Button type="submit" variant="primary" >Create Project</Button>
                 </div>
             </form>
 

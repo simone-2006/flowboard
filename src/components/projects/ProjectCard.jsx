@@ -151,13 +151,13 @@ export default function ProjectCard(
                     </Button>
                 </div>
                 <div className="overflow-x-auto rounded">
-                    <table className="w-full text-sm border-separate border-spacing-y-1">
+                    <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                         <thead>
                             <tr className="bg-gray-100">
-                                <th className="text-left px-2 py-1 rounded-l">Title</th>
-                                <th className="text-left px-2 py-1">Due date</th>
-                                <th className="text-left px-2 py-1 rounded-r">Completed</th>
-                                <th className="text-left px-2 py-1 rounded-r">Action</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-l">Title</th>
+                                <th className="w-1/4 text-left px-2 py-1">Due date</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Completed</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -167,8 +167,8 @@ export default function ProjectCard(
                                     className={`group hover:bg-blue-50 border-b border-gray-200 transition-colors ${task.completed ? " bg-green-200/60" : ""}`}
                                 >
                            
-                                    <td className="px-2 py-1 font-medium text-gray-900">{task.title}</td>
-                                    <td className="px-2 py-1">
+                                    <td className="w-1/4 px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                    <td className="w-1/4 px-2 py-1">
                                         {task.dueDate
                                             ? (() => {
                                                 return formatDateGGMMAAAA(task.dueDate)
@@ -184,7 +184,7 @@ export default function ProjectCard(
                                             return null;
                                         })()}
                                     </td>
-                                    <td className="px-2 py-1">
+                                    <td className="w-1/4 px-2 py-1">
                                         <div className="flex justify-start">
                                             <TaskCheckbox
                                                 checked={task.completed}
@@ -192,7 +192,7 @@ export default function ProjectCard(
                                             />
                                         </div>
                                     </td>
-                                    <td className="px-2 py-1">
+                                    <td className="w-1/4 px-2 py-1">
                                         <button
                                             className="text-red-600 cursor-pointer" title="Delete task"
                                             onClick={() => handleDeleteTask(task.id)}
@@ -205,10 +205,10 @@ export default function ProjectCard(
                             ))}
                             {addTaskOpen && (
                                 <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
-                                    <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
-                                    <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
-                                    <td></td>
-                                    <td className="px-2 py-0.5 flex justify-start items-center">
+                                    <td className="w-1/4 px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
+                                    <td className="w-1/4 px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
+                                    <td className="w-1/4" ></td>
+                                    <td className="w-1/4 px-2 py-0.5 flex justify-start items-center">
                                         <Button onClick={handleAddTask}>
                                             Add
                                         </Button>

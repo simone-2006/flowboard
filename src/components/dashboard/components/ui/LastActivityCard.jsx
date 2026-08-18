@@ -12,12 +12,12 @@ export default function LastActivityCard() {
 
     return (
         <DashboardCard cardTitle="Last activities">
-            <table className="w-full text-sm border-separate border-spacing-y-1">
+            <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                 <thead>
                     <tr className="bg-gray-100">
-                        <th className="text-left px-2 py-1 rounded-r">Timestamp</th>
-                        <th className="text-left px-2 py-1 rounded-l">User</th>
-                        <th className="text-left px-2 py-1">Action</th>
+                        <th className="w-1/3 text-left px-2 py-1 rounded-r">Timestamp</th>
+                        <th className="w-1/3 text-left px-2 py-1 rounded-l">User</th>
+                        <th className="w-1/3 text-left px-2 py-1">Action</th>
                     </tr>
                 </thead>
 
@@ -26,13 +26,13 @@ export default function LastActivityCard() {
                         usersActivities.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp)).map((activity) => (
                             <tr key={activity.id} className="group hover:bg-blue-50 border-b border-gray-200 transition-colors">
                                 {/* const creator = users.find(user => user.id === creatorID); */}
-                                <td className="px-2 py-1 text-gray-900">
+                                <td className="w-1/3 px-2 py-1 text-gray-900">
                                     {formatDateTimeGGMMAAAAHHMMSS(activity.timeStamp)}
                                 </td>
-                                <td className="px-2 py-1 font-medium text-gray-900">
+                                <td className="w-1/3 px-2 py-1 font-medium text-gray-900">
                                     {(users.find(user => user.id === activity.userId)?.name + " " + (users.find(user => user.id === activity.userId)?.surname) ?? "Unknown user")}
                                 </td>
-                                <td className="px-2 py-1 text-gray-900">{activity.activityDescription ?? "No description"}</td>
+                                <td className="w-1/3 px-2 py-1 text-gray-900">{activity.activityDescription ?? "No description"}</td>
                             </tr>
                         ))
                     ) : (
