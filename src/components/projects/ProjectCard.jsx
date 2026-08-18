@@ -76,7 +76,7 @@ export default function ProjectCard(
 
 
     return (
-        <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 transition-shadow hover:shadow-xl">
+        <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-100 transition-shadow hover:shadow-xl">
             {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex gap-3 items-center">
@@ -166,7 +166,7 @@ export default function ProjectCard(
                                     key={task.id}
                                     className={`group hover:bg-blue-50 border-b border-gray-200 transition-colors ${task.completed ? " bg-green-200/60" : ""}`}
                                 >
-                           
+
                                     <td className="px-2 py-1 font-medium text-gray-900">{task.title}</td>
                                     <td className="px-2 py-1">
                                         {task.dueDate
