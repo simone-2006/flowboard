@@ -152,16 +152,7 @@ const initialUsers = [
     }
 ];
 
-const usersActivities = [
-    {
-        id: 1,
-        userId: 1,
-        projectId: 1,
-        taskId: 1,
-        activityDescription: "Completed task",
-        timeStamp: "10-10-2026"
-    },
-]
+const initialUsersActivities = []
 
 export function AppProvider({ children }) {
     {/* Auth */ }
@@ -273,7 +264,7 @@ export function AppProvider({ children }) {
     const [users, setUsers] = useState(initialUsers);
 
     {/* USERS ACTIVITIES */ }
-    const [usersActivities, setUsersActivities] = useState(null);
+    const [usersActivities, setUsersActivities] = useState(initialUsersActivities);
 
     const createUserActivity = (
         userId,
@@ -302,7 +293,7 @@ export function AppProvider({ children }) {
 
 
     return (
-        <AppContext.Provider value={{ authUserData, users, projects, setProjects, toggleTask, addProject, addTaskToProject, deleteTask, createUserActivity }}>
+        <AppContext.Provider value={{ authUserData, users, projects, usersActivities, setProjects, toggleTask, addProject, addTaskToProject, deleteTask, createUserActivity }}>
             {children}
         </AppContext.Provider>
     );

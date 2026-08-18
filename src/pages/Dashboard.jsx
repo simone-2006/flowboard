@@ -3,6 +3,7 @@ import Input from "../components/ui/Input"
 
 import DashboardCard from "../components/dashboard/components/ui/DashboardCard";
 import TaskCompletionProgressBar from "../components/ui/TaskCompletionProgressBar";
+import LastActivityCard from "../components/dashboard/components/ui/LastActivityCard";
 
 import Page from "../components/layout/Page";
 
@@ -45,10 +46,10 @@ export default function Dashboard() {
     <>
       <Page>
         {/* UN BANNER WORK IN PROGRESS GIGANTE */}
-        <div className="bg-yellow-500 text-white p-4 rounded-lg mb-4">
+        {/* <div className="bg-yellow-500 text-white p-4 rounded-lg mb-4">
           <p className="font-bold text-xl">Work in progress</p>
           <p className="text-sm">This project is a work in progress.</p>
-        </div>
+        </div> */}
         <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Dashboard</h3>
         <div className="grid grid-cols-3">
           <DashboardCard cardTitle="Total projects">
@@ -64,8 +65,9 @@ export default function Dashboard() {
             <p className="font-bold text-xl text-red-600">{totalOverdueTasks}</p>
           </DashboardCard>
         </div>
+        <LastActivityCard />
 
-        <TaskCompletionProgressBar percentage={tasksPercentage}></TaskCompletionProgressBar>
+        {/* <TaskCompletionProgressBar percentage={tasksPercentage}></TaskCompletionProgressBar> */}
 
       </Page>
     </>

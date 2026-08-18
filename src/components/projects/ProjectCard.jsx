@@ -11,7 +11,7 @@ import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
 import { useAppContext } from "../../context/appContext";
 
 import { showAlert } from "../ui/Alert";
-import { getNow } from "../../utils/functions";
+import { formatDateGGMMAAAA, getNow } from "../../utils/functions";
 
 
 export default function ProjectCard(
@@ -116,11 +116,7 @@ export default function ProjectCard(
                 <span>
                     <span className="font-medium">Due: </span>
                     <span className="">{dueDate ? (() => {
-                        const d = new Date(dueDate);
-                        const day = String(d.getDate()).padStart(2, '0');
-                        const month = String(d.getMonth() + 1).padStart(2, '0');
-                        const year = d.getFullYear();
-                        return `${day}/${month}/${year}`;
+                        return formatDateGGMMAAAA(dueDate)
                     })() : '-'}</span>
                 </span>
             </div>
@@ -166,16 +162,16 @@ export default function ProjectCard(
                         </thead>
                         <tbody>
                             {tasks.map(task => (
-                                <tr key={task.id} className="group hover:bg-blue-50 border-b border-gray-200 transition-colors">
+                                <tr
+                                    key={task.id}
+                                    className={`group hover:bg-blue-50 border-b border-gray-200 transition-colors ${task.completed ? " bg-green-200/60" : ""}`}
+                                >
+                           
                                     <td className="px-2 py-1 font-medium text-gray-900">{task.title}</td>
                                     <td className="px-2 py-1">
                                         {task.dueDate
                                             ? (() => {
-                                                const d = new Date(task.dueDate);
-                                                const day = String(d.getDate()).padStart(2, '0');
-                                                const month = String(d.getMonth() + 1).padStart(2, '0');
-                                                const year = d.getFullYear();
-                                                return `${day}/${month}/${year}`;
+                                                return formatDateGGMMAAAA(task.dueDate)
                                             })()
                                             : '-'
                                         }

@@ -13,7 +13,13 @@ import { useState } from "react";
 import { useAppContext } from "../context/appContext";
 import { showAlert } from "../components/ui/Alert";
 
+import { getNow } from "../utils/functions";
+
 export default function CreateProject() {
+    {/* AUTH USER + USER ACTIVITIES */ }
+    const { authUserData } = useAppContext();
+    const { createUserActivity } = useAppContext()
+
     const navigate = useNavigate();
 
     const [name, setName] = useState("New Project");
@@ -71,7 +77,7 @@ export default function CreateProject() {
         )
     }
 
-    const handleSubmit = (e) => {
+    const handleCreateProject = (e) => {
         e.preventDefault();
         const newProject = {
             name,
@@ -81,6 +87,7 @@ export default function CreateProject() {
             tasks,
             status
         };
+        createUserActivity(authUserData.id, "", "", `Created a new project: ${name}`, getNow())
         addProject(newProject) ? navigate("/projects") : showAlert("Error", "error");
 
     };
@@ -210,7 +217,7 @@ export default function CreateProject() {
                 </div>
                 <div className="flex items-center gap-1">
                     <Link to="/projects"><Button variant="ghost" icon={<ChevronLeft size={18} />}>Back</Button></Link>
-                    <Button type="submit" variant="primary" onClick={handleSubmit}>Create Project</Button>
+                    <Button type="submit" variant="primary" onClick={handleCreateProject}>Create Project</Button>
                 </div>
             </form>
 
