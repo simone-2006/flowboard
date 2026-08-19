@@ -5,13 +5,19 @@ import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
 
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
 
-import { useAppContext } from "../../context/appContext";
+import { useAuthUser } from "../../hooks/useAuthUser";
+import { useUsers } from "../../hooks/useUsers";
+import { useTasks } from "../../hooks/useTasks";
 
 import { showAlert } from "../ui/Alert";
-import { formatDateGGMMAAAA, getNow } from "../../utils/functions";
+import { formatDateGGMMAAAA } from "../../utils/functions";
+import { DEV_USER_ID } from "../../utils/auth";
+
+import useSound from 'use-sound';
+import dingSound from '../../sound/Ding.mp3';
 
 
 export default function ProjectCard(
@@ -21,14 +27,21 @@ export default function ProjectCard(
         description,
         color,
         creatorID,
-        tasks,
+        tasks: initialTasks,
         dueDate,
         status
     }
 ) {
-    {/* AUTH USER + USER ACTIVITIES */ }
-    const { authUserData } = useAppContext();
-    const { createUserActivity } = useAppContext()
+    const { data: authUserData } = useAuthUser();
+    const { data: users = [] } = useUsers();
+    const {
+        data: tasks = [],
+        toggleTask,
+        addTaskToProject,
+        deleteTask,
+    } = useTasks(id, initialTasks ?? []);
+
+    const [playDing] = useSound(dingSound);
 
     const totalTask = tasks.length;
     const taskCompleted = tasks.filter(task => task.completed).length;
@@ -44,35 +57,43 @@ export default function ProjectCard(
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
     };
 
-    const { toggleTask } = useAppContext();
-
-    const handleToggleTask = (taskID) => {
-        {/* Funzione per fare il toggle tra completata e non */ }
-        toggleTask(id, taskID) === "completed"
-            ? createUserActivity(authUserData.id, id, taskID, "Completed a task", getNow())
-            : ""
+    const handleToggleTask = async (taskID) => {
+        const result = await toggleTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+        if (result === "completed") {
+            showAlert("Task marked as completed", "success");
+            playDing();
+        } else if (result === "incomplete") {
+            showAlert("Task marked as incomplete", "info");
+        } else {
+            showAlert("Task not found", "warning");
+        }
     }
 
+    async function handleAddTask() {
+        if (newTaskName === "") {
+            showAlert("Error task name can't be empty", "error")
+            return
+        }
+        if (newTaskDue === "") {
+            showAlert("Error task due date can't be empty", "error")
+            return
+        }
 
-    const { addTaskToProject } = useAppContext();
-    function handleAddTask() {
-        if (addTaskToProject(id, newTaskName, newTaskDue)) {
-            createUserActivity(authUserData.id, id, "", `Created a new task: ${newTaskName}`, getNow())
-
+        if (await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID)) {
+            showAlert("Task added to project", "success");
+            playDing();
             setAddTaskOpen(false)
             setNewTaskName("")
             setNewTaskDue("")
         }
     }
 
-    const { deleteTask } = useAppContext();
-    function handleDeleteTask(taskID) {
-        if (deleteTask(id, taskID)) {
-            createUserActivity(authUserData.id, id, taskID, `Deleted a task`, getNow())
+    async function handleDeleteTask(taskID) {
+        if (await deleteTask(id, taskID, authUserData?.id ?? DEV_USER_ID)) {
+            showAlert("Task deleted from project", "success");
+            playDing();
         }
     }
-
-    const { users } = useAppContext();
 
 
     return (
@@ -103,7 +124,7 @@ export default function ProjectCard(
                     {(() => {
                         const creator = users.find(user => user.id === creatorID);
 
-                        if (creatorID === authUserData.id) {
+                        if (creator && creatorID === authUserData?.id) {
                             return <span className="ml-1">you ({creator.name} {creator.surname})</span>;
                         }
 

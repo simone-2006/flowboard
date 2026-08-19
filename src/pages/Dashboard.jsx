@@ -7,23 +7,23 @@ import LastActivityCard from "../components/dashboard/components/ui/LastActivity
 
 import Page from "../components/layout/Page";
 
-import { useAppContext } from '../context/appContext';
+import { useProjects } from '../hooks/useProjects';
 
 export default function Dashboard() {
-  const { projects } = useAppContext()
+  const { data: projects = [], loading, error } = useProjects()
   const totalProjects = projects.length
 
   const totalTasks = projects.reduce((acc, project) => {
-    return acc + project.tasks.length;
+    return acc + (project.tasks ?? []).length;
   }, 0);
 
   // const name = "Simone" //usato per adesso in produzione. Piu avanti anche autenticazione.
   const totalTasksToDo = projects.reduce((acc, project) => {
-    return acc + project.tasks.filter(task => !task.completed).length;
+    return acc + (project.tasks ?? []).filter(task => !task.completed).length;
   }, 0);
 
   const totalTasksCompleted = projects.reduce((acc, project) => {
-    return acc + project.tasks.filter(task => task.completed).length;
+    return acc + (project.tasks ?? []).filter(task => task.completed).length;
   }, 0);
 
   // prendi il numero di tutte le task con data di scadenza scaduta
@@ -31,7 +31,7 @@ export default function Dashboard() {
   const totalOverdueTasks = projects.reduce((acc, project) => {
     return (
       acc +
-      project.tasks.filter(task => {
+      (project.tasks ?? []).filter(task => {
         if (!task.dueDate) return false;
         // Only compare date parts
         return new Date(task.dueDate) < currentDate && !task.completed;
@@ -51,6 +51,8 @@ export default function Dashboard() {
           <p className="text-sm">This project is a work in progress.</p>
         </div> */}
         <h3 className="font-bold text-2xl my-2 flex items-center justify-between">Dashboard</h3>
+        {loading && <p className="text-sm text-gray-500 mb-2">Loading...</p>}
+        {error && <p className="text-sm text-red-600 mb-2">Could not load projects.</p>}
         <div className="grid grid-cols-3">
           <DashboardCard cardTitle="Total projects">
             <p className="font-bold text-xl text-amber-600">{totalProjects}</p>

@@ -8,12 +8,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../ui/Button';
 
-import { useAppContext } from '../../context/appContext';
+import { useAuthUser } from '../../hooks/useAuthUser';
 
 import { Settings } from 'lucide-react';
 
 export default function Navbar() {
-    const { authUserData } = useAppContext()
+    const { data: authUserData } = useAuthUser()
     // console.log(authUserData)
 
     const navElements = [
@@ -53,8 +53,8 @@ export default function Navbar() {
             <div className="flex items-center gap-2">
                 {/* User data: */}
                 <div className='flex flex-col border-r border-gray-200 pr-3'>
-                    <span className='text-sm font-bold'>{authUserData.name} {authUserData.surname}</span>
-                    <span className='text-xs text-gray-500'>{authUserData.role}</span>
+                    <span className='text-sm font-bold'>{authUserData?.name} {authUserData?.surname}</span>
+                    <span className='text-xs text-gray-500'>{authUserData?.role}</span>
                 </div>
                 <Link to="/settings">
                     <Button icon={<Settings />} variant='ghost' />

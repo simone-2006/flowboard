@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { AppProvider } from './context/appContext';
 import Navbar from './components/layout/Navbar';
 
 import Dashboard from "./pages/Dashboard"
@@ -17,7 +16,6 @@ import { showAlert } from './components/ui/Alert';
 export default function App() {
   return (
     <div className="bg-gray-100">
-      <AppProvider>
         <Router>
           {/* Alert container - fixed to stay visible when scrolling */}
           <div className="fixed right-0 top-0 p-2 z-50" id="alert-container">
@@ -34,7 +32,6 @@ export default function App() {
             <Route path="/editproject" element={<EditProject />} />
           </Routes>
         </Router>
-      </AppProvider>
       {/* Bottone di test per le alert */}
       {/* <button
         onClick={() => showAlert("Test alert: Confermato!", "success")}

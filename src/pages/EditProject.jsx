@@ -11,22 +11,13 @@ import TaskCheckbox from "../components/projects/TaskCheckbox";
 
 import { ChevronLeft, Plus, Minus, X } from "lucide-react";
 
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { useState } from "react";
 
-import { useAppContext } from "../context/appContext";
 import { showAlert } from "../components/ui/Alert";
 
-import { getNow } from "../utils/functions";
-
 export default function EditProject() {
-    {/* AUTH USER + USER ACTIVITIES */ }
-    const { authUserData } = useAppContext();
-    const { createUserActivity } = useAppContext()
-
-    const navigate = useNavigate();
-
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
     const [color, setColor] = useState("");
