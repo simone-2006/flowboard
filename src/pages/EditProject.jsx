@@ -19,8 +19,9 @@ import { useEffect, useState } from "react";
 
 import { showAlert } from "../components/ui/Alert";
 
-import { useAuthUser } from "../hooks/useAuthUser";
-import { useProjects } from "../hooks/useProjects";
+import { getProfileById } from "../api/profiles";
+import { getProjectById, updateProject } from "../api/projects";
+import { DEV_USER_ID } from "../utils/auth";
 
 function toDateInputValue(value) {
     if (!value) return "";
@@ -30,8 +31,7 @@ function toDateInputValue(value) {
 export default function EditProject() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { data: authUserData } = useAuthUser();
-    const { getProjectById, updateProject } = useProjects();
+    const [authUserData, setAuthUserData] = useState(null);
 
     // Stati per i valori del form
     const [name, setName] = useState("");
@@ -47,6 +47,10 @@ export default function EditProject() {
 
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+
+    useEffect(() => {
+        getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => { });
+    }, []);
 
     // Carica dati del progetto all'avvio/id change
     useEffect(() => {
@@ -66,13 +70,13 @@ export default function EditProject() {
                 })));
                 setLoading(false);
             })
-            .catch(err => {
+            .catch(() => {
                 showAlert("Project not found", "error");
                 setLoading(false);
             });
 
         return () => { isMounted = false };
-    }, [id, getProjectById]);
+    }, [id]);
 
     const handleOpenAddTask = () => {
         setAddTaskOpen(open => !open);
@@ -151,11 +155,7 @@ export default function EditProject() {
             tasks,
         };
         try {
-            const saved = await updateProject(updatedProject, authUserData?.id);
-            if (!saved) {
-                showAlert("Save failed", "error");
-                return;
-            }
+            await updateProject(updatedProject, authUserData?.id);
             showAlert("Project updated!", "success");
             navigate("/projects");
         } catch (e) {

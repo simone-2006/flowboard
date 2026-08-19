@@ -7,10 +7,20 @@ import LastActivityCard from "../components/dashboard/components/ui/LastActivity
 
 import Page from "../components/layout/Page";
 
-import { useProjects } from '../hooks/useProjects';
+import { listProjects } from '../api/projects';
+import { useEffect, useState } from 'react';
 
 export default function Dashboard() {
-  const { data: projects = [], loading, error } = useProjects()
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    listProjects()
+      .then(setProjects)
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
   const totalProjects = projects.length
 
   const totalTasks = projects.reduce((acc, project) => {

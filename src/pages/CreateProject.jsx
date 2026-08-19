@@ -8,19 +8,23 @@ import { ChevronLeft, Plus, Minus, X } from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import { useAuthUser } from "../hooks/useAuthUser";
-import { useProjects } from "../hooks/useProjects";
+import { getProfileById } from "../api/profiles";
+import { createProject } from "../api/projects";
+import { DEV_USER_ID } from "../utils/auth";
 import { showAlert } from "../components/ui/Alert";
 
 import useSound from 'use-sound';
 import dingSound from '../sound/Ding.mp3';
 
 export default function CreateProject() {
-    const { data: authUserData } = useAuthUser();
-    const { addProject } = useProjects();
+    const [authUserData, setAuthUserData] = useState(null);
     const [playDing] = useSound(dingSound);
+
+    useEffect(() => {
+        getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => {});
+    }, []);
 
     const navigate = useNavigate();
 
@@ -79,19 +83,19 @@ export default function CreateProject() {
 
     const handleCreateProject = async (e) => {
         e.preventDefault();
-        const created = await addProject({
-            name,
-            description,
-            color,
-            dueDate: dueDate || null,
-            tasks,
-            status
-        }, authUserData?.id);
-        if (created) {
+        try {
+            await createProject({
+                name,
+                description,
+                color,
+                dueDate: dueDate || null,
+                tasks,
+                status
+            }, authUserData?.id);
             showAlert('Project created successfully', 'success');
             playDing();
             navigate("/projects");
-        } else {
+        } catch {
             showAlert("Error", "error");
         }
     };

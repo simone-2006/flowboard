@@ -3,11 +3,18 @@ import Input from "../components/ui/Input"
 
 import Page from "../components/layout/Page";
 
-import { useUsers } from "../hooks/useUsers";
+import { listProfiles } from "../api/profiles";
+import { useEffect, useState } from "react";
 
 export default function Team() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const { loading, error } = useUsers();
+  useEffect(() => {
+    listProfiles()
+      .catch(setError)
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <Page>

@@ -1,11 +1,20 @@
 import DashboardCard from "./DashboardCard";
 
-import { useActivities } from "../../../../hooks/useActivities";
+import { listActivities } from "../../../../api/activities";
 import { formatDateTimeGGMMAAAAHHMMSS } from "../../../../utils/functions";
+import { useEffect, useState } from "react";
 
 export default function LastActivityCard() {
+    const [usersActivities, setUsersActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const { data: usersActivities = [], loading, error } = useActivities();
+    useEffect(() => {
+        listActivities()
+            .then(setUsersActivities)
+            .catch(setError)
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
         <DashboardCard cardTitle="Last activities">

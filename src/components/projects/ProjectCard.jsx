@@ -5,13 +5,12 @@ import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash, Pen, Plus, Minus, X } from 'lucide-react';
 
-import { useAuthUser } from "../../hooks/useAuthUser";
-import { useUsers } from "../../hooks/useUsers";
-import { useTasks } from "../../hooks/useTasks";
+import { getProfileById, listProfiles } from "../../api/profiles";
+import { addTaskToProject, deleteTask, listTasksByProject, toggleTask } from "../../api/tasks";
 
 import { showAlert } from "../ui/Alert";
 import { formatDateGGMMAAAA } from "../../utils/functions";
@@ -33,14 +32,18 @@ export default function ProjectCard(
         status
     }
 ) {
-    const { data: authUserData } = useAuthUser();
-    const { data: users = [] } = useUsers();
-    const {
-        data: tasks = [],
-        toggleTask,
-        addTaskToProject,
-        deleteTask,
-    } = useTasks(id, initialTasks ?? []);
+    const [authUserData, setAuthUserData] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [tasks, setTasks] = useState(initialTasks ?? []);
+
+    useEffect(() => {
+        getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => { });
+        listProfiles().then(setUsers).catch(() => { });
+    }, []);
+
+    useEffect(() => {
+        setTasks(initialTasks ?? []);
+    }, [id]);
 
     const [playDing] = useSound(dingSound);
 
@@ -59,13 +62,16 @@ export default function ProjectCard(
     };
 
     const handleToggleTask = async (taskID) => {
-        const result = await toggleTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
-        if (result === "completed") {
-            showAlert("Task marked as completed", "success");
-            playDing();
-        } else if (result === "incomplete") {
-            showAlert("Task marked as incomplete", "info");
-        } else {
+        try {
+            const result = await toggleTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
+            if (result === "completed") {
+                showAlert("Task marked as completed", "success");
+                playDing();
+            } else if (result === "incomplete") {
+                showAlert("Task marked as incomplete", "info");
+            }
+        } catch {
             showAlert("Task not found", "warning");
         }
     }
@@ -80,19 +86,27 @@ export default function ProjectCard(
             return
         }
 
-        if (await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID)) {
+        try {
+            await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
             showAlert("Task added to project", "success");
             playDing();
             setAddTaskOpen(false)
             setNewTaskName("")
             setNewTaskDue("")
+        } catch {
+            showAlert("Error", "error");
         }
     }
 
     async function handleDeleteTask(taskID) {
-        if (await deleteTask(id, taskID, authUserData?.id ?? DEV_USER_ID)) {
+        try {
+            await deleteTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
             showAlert("Task deleted from project", "success");
             playDing();
+        } catch {
+            showAlert("Error", "error");
         }
     }
 
@@ -111,7 +125,7 @@ export default function ProjectCard(
                 </div>
                 <div className="flex items-center gap-2">
                     <Link to={`/editProject/${id}`}><Button variant="ghost" icon={<Pen size={18} />} className="transition hover:bg-blue-100"></Button></Link>
-               
+
                     <Button variant="danger" icon={<Trash size={18} />} className="transition hover:bg-red-100"></Button>
                 </div>
             </div>
@@ -189,7 +203,7 @@ export default function ProjectCard(
                                     key={task.id}
                                     className={`group hover:bg-blue-50 border-b border-gray-200 transition-colors ${task.completed ? " bg-green-200/60" : ""}`}
                                 >
-                           
+
                                     <td className="w-1/4 px-2 py-1 font-medium text-gray-900">{task.title}</td>
                                     <td className="w-1/4 px-2 py-1">
                                         {task.dueDate

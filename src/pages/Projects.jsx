@@ -9,12 +9,21 @@ import { Search } from 'lucide-react'
 
 import { Link } from "react-router-dom";
 
-import { useProjects } from "../hooks/useProjects";
-import { useState } from "react";
+import { listProjects } from "../api/projects";
+import { useEffect, useState } from "react";
 
 export default function Projects() {
-    const { data: projects = [], loading, error } = useProjects();
+    const [projects, setProjects] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [filter, setFilter] = useState("");
+
+    useEffect(() => {
+        listProjects()
+            .then(setProjects)
+            .catch(setError)
+            .finally(() => setLoading(false));
+    }, []);
 
     const query = filter.trim().toLowerCase();
 
