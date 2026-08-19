@@ -21,6 +21,18 @@ export async function listProjects() {
     }));
 }
 
+export async function getProjectById(id) {
+    const { data, error } = await supabase
+        .from('projects')
+        .select(PROJECT_SELECT)
+        .match({ id })
+        .single();
+
+    if (error) throw error;
+    return data;
+}
+
+
 export async function createProject(newProject, userId = DEV_USER_ID) {
     const { name, description, color, dueDate, status, tasks = [] } = newProject;
 
@@ -61,3 +73,80 @@ export async function createProject(newProject, userId = DEV_USER_ID) {
 
     return project;
 }
+
+async function syncProjectTasks(projectId, incomingTasks = []) {
+    const { data: existingTasks, error: listError } = await supabase
+        .from('tasks')
+        .select('id')
+        .eq('project_id', projectId);
+
+    if (listError) throw listError;
+
+    const existingIds = new Set((existingTasks ?? []).map((task) => task.id));
+    const incoming = incomingTasks ?? [];
+    const toUpdate = incoming.filter((task) => existingIds.has(task.id));
+    const toInsert = incoming.filter((task) => !existingIds.has(task.id));
+    const incomingExistingIds = new Set(toUpdate.map((task) => task.id));
+    const toDelete = [...existingIds].filter((taskId) => !incomingExistingIds.has(taskId));
+
+    if (toDelete.length > 0) {
+        const { error } = await supabase.from('tasks').delete().in('id', toDelete);
+        if (error) throw error;
+    }
+
+    if (toInsert.length > 0) {
+        const rows = toInsert.map((task) => ({
+            project_id: projectId,
+            title: task.title,
+            completed: Boolean(task.completed),
+            due_date: task.dueDate || null,
+        }));
+        const { error } = await supabase.from('tasks').insert(rows);
+        if (error) throw error;
+    }
+
+    for (const task of toUpdate) {
+        const { error } = await supabase
+            .from('tasks')
+            .update({
+                title: task.title,
+                completed: Boolean(task.completed),
+                due_date: task.dueDate || null,
+            })
+            .eq('id', task.id);
+        if (error) throw error;
+    }
+}
+
+export async function updateProject(editedProject, userId = DEV_USER_ID) {
+    const { id, name, description, color, dueDate, status, tasks = [] } = editedProject;
+
+    const { data: project, error } = await supabase
+        .from('projects')
+        .update({
+            name,
+            description,
+            color,
+            status,
+            due_date: dueDate || null,
+            creator_id: userId || DEV_USER_ID,
+        })
+        .eq('id', id)
+        .select('id')
+        .single();
+
+    if (error) throw error;
+
+    await syncProjectTasks(id, tasks);
+
+    await createUserActivity({
+        userId: userId || DEV_USER_ID,
+        projectId: project.id,
+        taskId: null,
+        activityDescription: 'Edited project',
+        projectName: name,
+    });
+
+    return project;
+}
+

@@ -30,6 +30,7 @@ export default function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/createproject" element={<CreateProject />} />
             <Route path="/editproject" element={<EditProject />} />
+            <Route path="/editproject/:id" element={<EditProject />} />
           </Routes>
         </Router>
       {/* Bottone di test per le alert */}

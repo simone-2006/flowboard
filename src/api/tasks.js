@@ -110,6 +110,6 @@ export async function deleteTask(projectId, taskId, userId = DEV_USER_ID) {
 export async function getTask(projectId, taskId) {
     const { data, error } = await supabase.from('tasks').select('id, title, completed, dueDate:due_date').eq('project_id', projectId).eq('id', taskId)
     if (error) throw error;
-    console.log(data)
+    // console.log(data)
     return data ?? []
 }

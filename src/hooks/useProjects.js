@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
-import { createProject, listProjects } from '../api/projects';
+import {
+    createProject,
+    getProjectById as getProjectByIdApi,
+    listProjects,
+    updateProject as updateProjectApi,
+} from '../api/projects';
 import { DEV_USER_ID } from '../utils/auth';
 
 export function useProjects() {
@@ -36,5 +41,20 @@ export function useProjects() {
         }
     };
 
-    return { data, loading, error, refetch, addProject };
+    const updateProject = async (editedProject, userId = DEV_USER_ID) => {
+        try {
+            await updateProjectApi(editedProject, userId);
+            await refetch();
+            return 1;
+        } catch (err) {
+            setError(err);
+            return 0;
+        }
+    };
+
+    const getProjectById = useCallback(async (projectId) => {
+        return getProjectByIdApi(projectId);
+    }, []);
+
+    return { data, loading, error, refetch, addProject, updateProject, getProjectById };
 }
