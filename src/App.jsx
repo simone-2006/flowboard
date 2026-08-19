@@ -54,6 +54,7 @@ export default function App() {
         Test Alert
       </button> */}
 
+      </AppProvider>
     </div>
   );
 }
