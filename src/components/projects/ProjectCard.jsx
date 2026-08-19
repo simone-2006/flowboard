@@ -203,14 +203,9 @@ export default function ProjectCard(
                                     key={task.id}
                                     className={`group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors text-gray-900 dark:text-gray-200 ${task.completed ? " bg-green-200/60 dark:bg-green-900/40" : ""}`}
                                 >
-
-<<<<<<< darkMode
-                                    <td className="px-2 py-1 font-medium ">{task.title}</td>
-                                    <td className="px-2 py-1">
-=======
-                                    <td className="w-1/4 px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                    <td className="w-1/4 px-2 py-1 font-medium text-gray-900 dark:text-gray-200">{task.title}</td>
                                     <td className="w-1/4 px-2 py-1">
->>>>>>> main
+
                                         {task.dueDate
                                             ? (() => {
                                                 return formatDateGGMMAAAA(task.dueDate)
@@ -246,19 +241,15 @@ export default function ProjectCard(
                                 </tr>
                             ))}
                             {addTaskOpen && (
-<<<<<<< darkMode
                                 <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600 animate-fade-in">
-                                    <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
-                                    <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
-                                    <td></td>
-                                    <td className="px-2 py-0.5 flex justify-start items-center">
-=======
-                                <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
-                                    <td className="w-1/4 px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
-                                    <td className="w-1/4 px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
-                                    <td className="w-1/4" ></td>
+                                    <td className="w-1/4 px-2 py-0.5">
+                                        <Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} />
+                                    </td>
+                                    <td className="w-1/4 px-2 py-0.5">
+                                        <Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} />
+                                    </td>
+                                    <td className="w-1/4"></td>
                                     <td className="w-1/4 px-2 py-0.5 flex justify-start items-center">
->>>>>>> main
                                         <Button onClick={handleAddTask}>
                                             Add
                                         </Button>

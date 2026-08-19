@@ -16,24 +16,23 @@ import { showAlert } from './components/ui/Alert';
 export default function App() {
   return (
     <div className="bg-gray-100 dark:bg-gray-800">
-      <AppProvider>
-        <Router>
-          {/* Alert container - fixed to stay visible when scrolling */}
-          <div className="fixed right-0 top-0 p-2 z-50" id="alert-container">
-          </div>
-          <Navbar />
+      <Router>
+        {/* Alert container - fixed to stay visible when scrolling */}
+        <div className="fixed right-0 top-0 p-2 z-50" id="alert-container">
+        </div>
+        <Navbar />
 
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/tasks" element={<Tasks />} />
-            <Route path="/team" element={<Team />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/createproject" element={<CreateProject />} />
-            <Route path="/editproject" element={<EditProject />} />
-            <Route path="/editproject/:id" element={<EditProject />} />
-          </Routes>
-        </Router>
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/tasks" element={<Tasks />} />
+          <Route path="/team" element={<Team />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/createproject" element={<CreateProject />} />
+          <Route path="/editproject" element={<EditProject />} />
+          <Route path="/editproject/:id" element={<EditProject />} />
+        </Routes>
+      </Router>
       {/* Bottone di test per le alert */}
       {/* <button
         onClick={() => showAlert("Test alert: Confermato!", "success")}
@@ -53,8 +52,6 @@ export default function App() {
       >
         Test Alert
       </button> */}
-
-      </AppProvider>
     </div>
   );
 }

@@ -43,6 +43,26 @@ export default function Navbar() {
 
     const location = useLocation();
 
+    // Simple skeleton for user info while loading or if error
+    const renderUserInfo = () => {
+        if (!authUserData) {
+            return (
+                <div className='flex flex-col border-r border-gray-200 dark:border-gray-700 pr-3'>
+                    <span className='text-sm font-bold text-gray-400 dark:text-gray-500 animate-pulse'>Loading...</span>
+                    <span className='text-xs text-gray-400 dark:text-gray-600'>-</span>
+                </div>
+            );
+        }
+        return (
+            <div className='flex flex-col border-r border-gray-200 dark:border-gray-700 pr-3'>
+                <span className='text-sm font-bold text-gray-900 dark:text-white'>
+                    {authUserData.name} {authUserData.surname}
+                </span>
+                <span className='text-xs text-gray-500 dark:text-gray-400'>{authUserData.role}</span>
+            </div>
+        );
+    };
+
     return (
         <nav className='flex justify-between items-center rounded-md shadow-md bg-white dark:bg-gray-900 gap-2 p-2 m-2'>
             <ul className='flex items-center gap-2'>
@@ -58,10 +78,7 @@ export default function Navbar() {
 
             <div className="flex items-center gap-2">
                 {/* User data: */}
-                <div className='flex flex-col border-r border-gray-200 dark:border-gray-700 pr-3'>
-                    <span className='text-sm font-bold text-gray-900 dark:text-white'>{authUserData.name} {authUserData.surname}</span>
-                    <span className='text-xs text-gray-500 dark:text-gray-400'>{authUserData.role}</span>
-                </div>
+                {renderUserInfo()}
                 <Link to="/settings">
                     <Button icon={<Settings />} variant='ghost' />
                 </Link>
