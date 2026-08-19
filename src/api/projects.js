@@ -55,7 +55,8 @@ export async function createProject(newProject, userId = DEV_USER_ID) {
         userId: userId || DEV_USER_ID,
         projectId: project.id,
         taskId: null,
-        activityDescription: `Created a new project: ${name}`,
+        activityDescription: 'Created a new project',
+        projectName: name,
     });
 
     return project;

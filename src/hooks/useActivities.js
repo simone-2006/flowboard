@@ -19,6 +19,8 @@ export function useActivities() {
         }
     }, []);
 
+
+
     useEffect(() => {
         setLoading(true);
         refetch();

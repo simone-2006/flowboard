@@ -4,6 +4,7 @@ import {
     deleteTask as deleteTaskApi,
     listTasksByProject,
     toggleTask as toggleTaskApi,
+    getTask
 } from '../api/tasks';
 import { DEV_USER_ID } from '../utils/auth';
 
@@ -64,6 +65,12 @@ export function useTasks(projectId, initialTasks = []) {
             return 0;
         }
     };
+
+    {/* GET TASK NAME FROM PROJECT ID + TASK ID */ }
+    // const getTaskName = useCallback(async (projectId, taskId) => {
+    //     const task = await getTask(projectId, taskId);
+    //     return task[0].title;
+    // }, []);
 
     return { data, loading, error, refetch, toggleTask, addTaskToProject, deleteTask };
 }

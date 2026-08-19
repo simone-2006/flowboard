@@ -16,7 +16,7 @@ export async function listTasksByProject(projectId) {
 export async function toggleTask(projectId, taskId, userId = DEV_USER_ID) {
     const { data: task, error: fetchError } = await supabase
         .from('tasks')
-        .select('id, completed')
+        .select('id, completed, title, project:projects(name)')
         .eq('id', taskId)
         .single();
 
@@ -38,6 +38,8 @@ export async function toggleTask(projectId, taskId, userId = DEV_USER_ID) {
             projectId,
             taskId,
             activityDescription: 'Completed a task',
+            taskName: task.title,
+            projectName: task.project?.name,
         });
     }
 
@@ -65,17 +67,31 @@ export async function addTaskToProject(projectId, taskName, taskDue, userId = DE
 
     if (error) throw error;
 
+    const { data: project } = await supabase
+        .from('projects')
+        .select('name')
+        .eq('id', projectId)
+        .single();
+
     await createUserActivity({
         userId,
         projectId,
         taskId: data.id,
-        activityDescription: `Created a new task: ${taskName}`,
+        activityDescription: 'Created a new task',
+        taskName,
+        projectName: project?.name,
     });
 
     return 1;
 }
 
 export async function deleteTask(projectId, taskId, userId = DEV_USER_ID) {
+    const { data: task } = await supabase
+        .from('tasks')
+        .select('title, project:projects(name)')
+        .eq('id', taskId)
+        .single();
+
     const { error } = await supabase.from('tasks').delete().eq('id', taskId);
     if (error) throw error;
 
@@ -84,7 +100,16 @@ export async function deleteTask(projectId, taskId, userId = DEV_USER_ID) {
         projectId,
         taskId: null,
         activityDescription: 'Deleted a task',
+        taskName: task?.title,
+        projectName: task?.project?.name,
     });
 
     return 1;
+}
+
+export async function getTask(projectId, taskId) {
+    const { data, error } = await supabase.from('tasks').select('id, title, completed, dueDate:due_date').eq('project_id', projectId).eq('id', taskId)
+    if (error) throw error;
+    console.log(data)
+    return data ?? []
 }

@@ -6,7 +6,7 @@ import ProjectStatusChip from "./ProjectStatusChip";
 
 
 import { useState } from "react";
-import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
+import { Trash, Pen, Plus, Minus, X } from 'lucide-react';
 
 import { useAuthUser } from "../../hooks/useAuthUser";
 import { useUsers } from "../../hooks/useUsers";
@@ -109,7 +109,7 @@ export default function ProjectCard(
                     <ProjectStatusChip status={status} />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" icon={<SquarePen size={18} />} className="transition hover:bg-blue-100"></Button>
+                    <Button variant="ghost" icon={<Pen size={18} />} className="transition hover:bg-blue-100"></Button>
                     <Button variant="danger" icon={<Trash size={18} />} className="transition hover:bg-red-100"></Button>
                 </div>
             </div>
