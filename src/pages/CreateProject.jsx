@@ -10,15 +10,17 @@ import { useNavigate, Link } from "react-router-dom";
 
 import { useState } from "react";
 
-import { useAppContext } from "../context/appContext";
+import { useAuthUser } from "../hooks/useAuthUser";
+import { useProjects } from "../hooks/useProjects";
 import { showAlert } from "../components/ui/Alert";
 
-import { getNow } from "../utils/functions";
+import useSound from 'use-sound';
+import dingSound from '../sound/Ding.mp3';
 
 export default function CreateProject() {
-    {/* AUTH USER + USER ACTIVITIES */ }
-    const { authUserData } = useAppContext();
-    const { createUserActivity } = useAppContext()
+    const { data: authUserData } = useAuthUser();
+    const { addProject } = useProjects();
+    const [playDing] = useSound(dingSound);
 
     const navigate = useNavigate();
 
@@ -32,8 +34,6 @@ export default function CreateProject() {
     const [addTaskOpen, setAddTaskOpen] = useState(false);
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDue, setNewTaskDue] = useState("");
-
-    const { addProject } = useAppContext();
 
     const handleOpenAddTask = () => {
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
@@ -77,19 +77,23 @@ export default function CreateProject() {
         )
     }
 
-    const handleCreateProject = (e) => {
+    const handleCreateProject = async (e) => {
         e.preventDefault();
-        const newProject = {
+        const created = await addProject({
             name,
             description,
             color,
-            dueDate,
+            dueDate: dueDate || null,
             tasks,
             status
-        };
-        createUserActivity(authUserData.id, "", "", `Created a new project: ${name}`, getNow())
-        addProject(newProject) ? navigate("/projects") : showAlert("Error", "error");
-
+        }, authUserData?.id);
+        if (created) {
+            showAlert('Project created successfully', 'success');
+            playDing();
+            navigate("/projects");
+        } else {
+            showAlert("Error", "error");
+        }
     };
 
     return (

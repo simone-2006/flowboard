@@ -9,11 +9,11 @@ import { Search } from 'lucide-react'
 
 import { Link } from "react-router-dom";
 
-import { useAppContext } from "../context/appContext";
+import { useProjects } from "../hooks/useProjects";
 import { useState } from "react";
 
 export default function Projects() {
-    const { projects } = useAppContext();
+    const { data: projects = [], loading, error } = useProjects();
     const [filter, setFilter] = useState("");
 
     const query = filter.trim().toLowerCase();
@@ -50,6 +50,9 @@ export default function Projects() {
                     type="search"
                 />
             </div>
+
+            {loading && <p className="text-sm text-gray-500 mb-2">Loading...</p>}
+            {error && <p className="text-sm text-red-600 mb-2">Could not load projects.</p>}
 
             <div className="grid grid-cols-1 gap-6">
                 {filteredProjects.map(project =>
