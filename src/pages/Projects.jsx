@@ -40,7 +40,7 @@ export default function Projects() {
             <div className="flex items-center justify-between">
 
                 <div className="flex items-center gap-2">
-                    <h3 className="font-bold text-2xl my-2">Projects</h3>
+                    <h3 className="font-bold text-2xl my-2 text-black dark:text-white">Projects</h3>
                     <Link to="/createproject">
                         <Button
                             variant="ghostPrimary"

@@ -22,7 +22,7 @@ export default function LastActivityCard() {
             {error && <p className="text-sm text-red-600 mb-2">Could not load activities.</p>}
             <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                 <thead>
-                    <tr className="bg-gray-100">
+                    <tr className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
                         <th className="w-1/3 text-left px-2 py-1 rounded-r">Timestamp</th>
                         <th className="w-1/3 text-left px-2 py-1 rounded-l">User</th>
                         <th className="w-1/3 text-left px-2 py-1">Action</th>
@@ -45,7 +45,7 @@ export default function LastActivityCard() {
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={3} className="px-2 py-2 text-center text-gray-400">
+                            <td colSpan={3} className="px-2 py-2 text-center text-gray-400 dark:text-gray-500">
                                 No recent activity found.
                             </td>
                         </tr>

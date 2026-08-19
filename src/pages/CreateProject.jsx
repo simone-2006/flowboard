@@ -102,18 +102,18 @@ export default function CreateProject() {
 
     return (
         <Page>
-            <h3 className="font-bold text-2xl my-2">Create a project</h3>
+            <h3 className="font-bold text-2xl my-2 text-black dark:text-white">Create a project</h3>
             <form>
                 <div className="mb-4">
-                    <label htmlFor="project-name" className="block mb-1 font-medium">Project name: <span className="text-red-500">*</span></label>
+                    <label htmlFor="project-name" className="block mb-1 font-medium text-gray-900 dark:text-gray-100">Project name: <span className="text-red-500 dark:text-red-400">*</span></label>
                     <Input id="project-name" name="projectName" type="text" required value={name} onChange={e => setName(e.target.value)} />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="description" className="block mb-1 font-medium">Description:</label>
+                    <label htmlFor="description" className="block mb-1 font-medium text-gray-900 dark:text-gray-100">Description:</label>
                     <Input id="description" name="description" type="text" value={description} onChange={e => setDescription(e.target.value)} />
                 </div>
                 <div className="mb-4 flex items-center gap-2">
-                    <label htmlFor="color" className="block mb-1 font-medium">Color:</label>
+                    <label htmlFor="color" className="block mb-1 font-medium text-gray-900 dark:text-gray-100">Color:</label>
                     <div className="flex">
                         <input
                             id="color"
@@ -126,25 +126,25 @@ export default function CreateProject() {
                             value={color}
                         />
                         <label htmlFor="color" className="cursor-pointer">
-                            <div className="w-6 h-6 border border-gray-300" style={{ backgroundColor: color }}></div>
+                            <div className="w-6 h-6 border border-gray-300 dark:border-gray-600" style={{ backgroundColor: color }}></div>
                         </label>
                     </div>
 
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="due-date" className="block mb-1 font-medium">Due date:</label>
+                    <label htmlFor="due-date" className="block mb-1 font-medium text-gray-900 dark:text-gray-100">Due date:</label>
                     <Input id="due-date" name="dueDate" type="date" value={dueDate} onChange={e => setDueDate(e.target.value)} />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="status" className="block mb-1 font-medium">Status:</label>
+                    <label htmlFor="status" className="block mb-1 font-medium text-gray-900 dark:text-gray-100">Status:</label>
                     <Select id="status" name="status" required value={status} onChange={e => setStatus(e.target.value)}>
                         <option value="active">Active</option>
                         <option value="planning">Planning</option>
                     </Select>
                 </div>
-                <div className="rounded-lg bg-gray-50 p-3 mt-2 mb-4 border border-gray-100 shadow-sm">
+                <div className="rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mt-2 mb-4 border border-gray-100 dark:border-gray-600 shadow-sm">
                     <div className="flex items-center justify-between mb-2">
-                        <h2 className="text-base font-bold text-gray-900 tracking-tight">Tasks</h2>
+                        <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">Tasks</h2>
                         <Button
                             variant="ghostPrimary"
                             icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
@@ -157,17 +157,17 @@ export default function CreateProject() {
                     <div className="overflow-x-auto rounded">
                         <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                             <thead>
-                                <tr className="bg-gray-100">
-                                    <th className="w-1/4 text-left px-2 py-1 rounded-l">Title</th>
-                                    <th className="w-1/4 text-left px-2 py-1">Due date</th>
-                                    <th className="w-1/4 text-left px-2 py-1 rounded-r">Completed</th>
-                                    <th className="w-1/4 text-left px-2 py-1 rounded-r">Action</th>
+                                <tr className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
+                                    <th className="text-left px-2 py-1 rounded-l">Title</th>
+                                    <th className="text-left px-2 py-1">Due date</th>
+                                    <th className="text-left px-2 py-1 rounded-r">Completed</th>
+                                    <th className="text-left px-2 py-1 rounded-r">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {tasks.map(task => (
-                                    <tr key={task.id} className="group hover:bg-blue-50 border-b border-gray-200 transition-colors">
-                                        <td className="w-1/4 px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                    <tr key={task.id} className="group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors">
+                                        <td className="w-1/4 px-2 py-1 font-medium text-gray-900 dark:text-gray-200">{task.title}</td>
                                         <td className="w-1/4 px-2 py-1">
                                             {task.dueDate
                                                 ? (() => {
@@ -183,7 +183,7 @@ export default function CreateProject() {
                                                 const currentDate = new Date();
                                                 const dueDate = new Date(task.dueDate);
                                                 if (dueDate < currentDate && !task.completed) {
-                                                    return <span className="text-red-600 font-bold ml-1 animate-pulse">!</span>;
+                                                    return <span className="text-red-600 dark:text-red-400 font-bold ml-1 animate-pulse">!</span>;
                                                 }
                                                 return null;
                                             })()}
@@ -199,7 +199,7 @@ export default function CreateProject() {
                                         <td className="w-1/4 px-2 py-1">
                                             <button
                                                 type="button"
-                                                className="text-red-600 cursor-pointer" title="Delete task"
+                                                className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
                                                 onClick={() => handleDeleteTask(task.id)}
                                             >
                                                 <X size={18} />
@@ -208,7 +208,7 @@ export default function CreateProject() {
                                     </tr>
                                 ))}
                                 {addTaskOpen && (
-                                    <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
+                                    <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600 animate-fade-in">
                                         <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
                                         <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
                                         <td></td>
