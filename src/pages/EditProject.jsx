@@ -20,7 +20,9 @@ import { useEffect, useState } from "react";
 import { showAlert } from "../components/ui/Alert";
 
 import { getProfileById } from "../api/profiles";
-import { getProjectById, updateProject } from "../api/projects";
+import { updateProject } from "../api/projects";
+import { listProjects } from "../api/projects";
+
 import { DEV_USER_ID } from "../utils/auth";
 
 function toDateInputValue(value) {
@@ -56,9 +58,16 @@ export default function EditProject() {
     useEffect(() => {
         let isMounted = true;
         setLoading(true);
-        getProjectById(id)
-            .then(project => {
+        listProjects(id)
+            .then(projects => {
                 if (!isMounted) return;
+                // listProjects returns an array, so get the first
+                const project = Array.isArray(projects) ? projects[0] : projects;
+                if (!project) {
+                    setLoading(false);
+                    showAlert("Project not found", "error");
+                    return;
+                }
                 setName(project.name ?? "");
                 setDescription(project.description ?? "");
                 setColor(project.color ?? "#000000");
@@ -70,9 +79,9 @@ export default function EditProject() {
                 })));
                 setLoading(false);
             })
-            .catch(() => {
-                showAlert("Project not found", "error");
+            .catch((err) => {
                 setLoading(false);
+                showAlert("Error loading project", "error");
             });
 
         return () => { isMounted = false };

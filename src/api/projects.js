@@ -9,11 +9,19 @@ const PROJECT_SELECT = `
     tasks (id, title, completed, dueDate:due_date)
 `;
 
-export async function listProjects() {
-    const { data, error } = await supabase
-        .from('projects')
-        .select(PROJECT_SELECT);
-
+export async function listProjects(id) {
+    let data, error;
+    if (id) {
+        ({ data, error } = await supabase
+            .from('projects')
+            .select(PROJECT_SELECT)
+            .eq('id', id));
+        // console.log(data)
+    } else if(!id) {
+        ({ data, error } = await supabase
+            .from('projects')
+            .select(PROJECT_SELECT));
+    }
     if (error) throw error;
     return (data ?? []).map((project) => ({
         ...project,
@@ -21,16 +29,16 @@ export async function listProjects() {
     }));
 }
 
-export async function getProjectById(id) {
-    const { data, error } = await supabase
-        .from('projects')
-        .select(PROJECT_SELECT)
-        .match({ id })
-        .single();
+// export async function getProjectById(id) {
+//     const { data, error } = await supabase
+//         .from('projects')
+//         .select(PROJECT_SELECT)
+//         .match({ id })
+//         .single();
 
-    if (error) throw error;
-    return data;
-}
+//     if (error) throw error;
+//     return data;
+// }
 
 
 export async function createProject(newProject, userId = DEV_USER_ID) {
