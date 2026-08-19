@@ -157,7 +157,7 @@ const initialUsersActivities = []
 export function AppProvider({ children }) {
     {/* Auth */ }
     {/* Autenticazione per ora sarà finta, e saremo dentro con l'utente che ha id 1 */ }
-    const [authUserID, setAuthUserID] = useState(2);
+    const [authUserID, setAuthUserID] = useState(1);
     const [authUserData, setAuthUserData] = useState(
         initialUsers.find(user => user.id === 1)
     );
