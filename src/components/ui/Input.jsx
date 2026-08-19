@@ -12,7 +12,8 @@ export default function Input({ variant = "primary", icon = "", ...props }) {
         <div className="flex items-center gap-2">
             {icon && <span className="text-gray-500 dark:text-gray-400">{icon}</span>}
             <input
-                className={`px-1.5 py-0.5 rounded-md outline-none ${variantClass[variant]}`}
+                className={`px-1.5 py-0.5 rounded-md outline-none ${variantClass[variant]} ${props.disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+       
                 {...props}
             />
         </div>

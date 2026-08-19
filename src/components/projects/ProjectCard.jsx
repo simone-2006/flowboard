@@ -5,13 +5,19 @@ import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
 
-import { useContext, useState } from "react";
-import { Trash, SquarePen, Plus, Minus, X } from 'lucide-react';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Trash, Pen, Plus, Minus, X } from 'lucide-react';
 
-import { useAppContext } from "../../context/appContext";
+import { getProfileById, listProfiles } from "../../api/profiles";
+import { addTaskToProject, deleteTask, listTasksByProject, toggleTask } from "../../api/tasks";
 
 import { showAlert } from "../ui/Alert";
-import { formatDateGGMMAAAA, getNow } from "../../utils/functions";
+import { formatDateGGMMAAAA } from "../../utils/functions";
+import { DEV_USER_ID } from "../../utils/auth";
+
+import useSound from 'use-sound';
+import dingSound from '../../sound/Ding.mp3';
 
 
 export default function ProjectCard(
@@ -21,14 +27,25 @@ export default function ProjectCard(
         description,
         color,
         creatorID,
-        tasks,
+        tasks: initialTasks,
         dueDate,
         status
     }
 ) {
-    {/* AUTH USER + USER ACTIVITIES */ }
-    const { authUserData } = useAppContext();
-    const { createUserActivity } = useAppContext()
+    const [authUserData, setAuthUserData] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [tasks, setTasks] = useState(initialTasks ?? []);
+
+    useEffect(() => {
+        getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => { });
+        listProfiles().then(setUsers).catch(() => { });
+    }, []);
+
+    useEffect(() => {
+        setTasks(initialTasks ?? []);
+    }, [id]);
+
+    const [playDing] = useSound(dingSound);
 
     const totalTask = tasks.length;
     const taskCompleted = tasks.filter(task => task.completed).length;
@@ -44,35 +61,54 @@ export default function ProjectCard(
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
     };
 
-    const { toggleTask } = useAppContext();
-
-    const handleToggleTask = (taskID) => {
-        {/* Funzione per fare il toggle tra completata e non */ }
-        toggleTask(id, taskID) === "completed"
-            ? createUserActivity(authUserData.id, id, taskID, "Completed a task", getNow())
-            : ""
+    const handleToggleTask = async (taskID) => {
+        try {
+            const result = await toggleTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
+            if (result === "completed") {
+                showAlert("Task marked as completed", "success");
+                playDing();
+            } else if (result === "incomplete") {
+                showAlert("Task marked as incomplete", "info");
+            }
+        } catch {
+            showAlert("Task not found", "warning");
+        }
     }
 
+    async function handleAddTask() {
+        if (newTaskName === "") {
+            showAlert("Error task name can't be empty", "error")
+            return
+        }
+        if (newTaskDue === "") {
+            showAlert("Error task due date can't be empty", "error")
+            return
+        }
 
-    const { addTaskToProject } = useAppContext();
-    function handleAddTask() {
-        if (addTaskToProject(id, newTaskName, newTaskDue)) {
-            createUserActivity(authUserData.id, id, "", `Created a new task: ${newTaskName}`, getNow())
-
+        try {
+            await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
+            showAlert("Task added to project", "success");
+            playDing();
             setAddTaskOpen(false)
             setNewTaskName("")
             setNewTaskDue("")
+        } catch {
+            showAlert("Error", "error");
         }
     }
 
-    const { deleteTask } = useAppContext();
-    function handleDeleteTask(taskID) {
-        if (deleteTask(id, taskID)) {
-            createUserActivity(authUserData.id, id, taskID, `Deleted a task`, getNow())
+    async function handleDeleteTask(taskID) {
+        try {
+            await deleteTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+            setTasks(await listTasksByProject(id));
+            showAlert("Task deleted from project", "success");
+            playDing();
+        } catch {
+            showAlert("Error", "error");
         }
     }
-
-    const { users } = useAppContext();
 
 
     return (
@@ -88,7 +124,8 @@ export default function ProjectCard(
                     <ProjectStatusChip status={status} />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Button variant="ghost" icon={<SquarePen size={18} />} className="transition hover:bg-blue-100"></Button>
+                    <Link to={`/editProject/${id}`}><Button variant="ghost" icon={<Pen size={18} />} className="transition hover:bg-blue-100"></Button></Link>
+
                     <Button variant="danger" icon={<Trash size={18} />} className="transition hover:bg-red-100"></Button>
                 </div>
             </div>
@@ -103,7 +140,7 @@ export default function ProjectCard(
                     {(() => {
                         const creator = users.find(user => user.id === creatorID);
 
-                        if (creatorID === authUserData.id) {
+                        if (creator && creatorID === authUserData?.id) {
                             return <span className="ml-1">you ({creator.name} {creator.surname})</span>;
                         }
 
@@ -151,13 +188,13 @@ export default function ProjectCard(
                     </Button>
                 </div>
                 <div className="overflow-x-auto rounded">
-                    <table className="w-full text-sm border-separate border-spacing-y-1">
+                    <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                         <thead>
                             <tr className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
-                                <th className="text-left px-2 py-1 rounded-l">Title</th>
-                                <th className="text-left px-2 py-1">Due date</th>
-                                <th className="text-left px-2 py-1 rounded-r">Completed</th>
-                                <th className="text-left px-2 py-1 rounded-r">Action</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-l">Title</th>
+                                <th className="w-1/4 text-left px-2 py-1">Due date</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Completed</th>
+                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -167,8 +204,13 @@ export default function ProjectCard(
                                     className={`group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors text-gray-900 dark:text-gray-200 ${task.completed ? " bg-green-200/60 dark:bg-green-900/40" : ""}`}
                                 >
 
+<<<<<<< darkMode
                                     <td className="px-2 py-1 font-medium ">{task.title}</td>
                                     <td className="px-2 py-1">
+=======
+                                    <td className="w-1/4 px-2 py-1 font-medium text-gray-900">{task.title}</td>
+                                    <td className="w-1/4 px-2 py-1">
+>>>>>>> main
                                         {task.dueDate
                                             ? (() => {
                                                 return formatDateGGMMAAAA(task.dueDate)
@@ -184,7 +226,7 @@ export default function ProjectCard(
                                             return null;
                                         })()}
                                     </td>
-                                    <td className="px-2 py-1">
+                                    <td className="w-1/4 px-2 py-1">
                                         <div className="flex justify-start">
                                             <TaskCheckbox
                                                 checked={task.completed}
@@ -192,7 +234,7 @@ export default function ProjectCard(
                                             />
                                         </div>
                                     </td>
-                                    <td className="px-2 py-1">
+                                    <td className="w-1/4 px-2 py-1">
                                         <button
                                             className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
                                             onClick={() => handleDeleteTask(task.id)}
@@ -204,11 +246,19 @@ export default function ProjectCard(
                                 </tr>
                             ))}
                             {addTaskOpen && (
+<<<<<<< darkMode
                                 <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600 animate-fade-in">
                                     <td className="px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
                                     <td className="px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
                                     <td></td>
                                     <td className="px-2 py-0.5 flex justify-start items-center">
+=======
+                                <tr className="bg-yellow-50 border-b border-gray-200 animate-fade-in">
+                                    <td className="w-1/4 px-2 py-0.5"><Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} /></td>
+                                    <td className="w-1/4 px-2 py-0.5"><Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} /></td>
+                                    <td className="w-1/4" ></td>
+                                    <td className="w-1/4 px-2 py-0.5 flex justify-start items-center">
+>>>>>>> main
                                         <Button onClick={handleAddTask}>
                                             Add
                                         </Button>

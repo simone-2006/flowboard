@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import { AppProvider } from './context/appContext';
 import Navbar from './components/layout/Navbar';
 
 import Dashboard from "./pages/Dashboard"
@@ -9,6 +8,7 @@ import Tasks from "./pages/Tasks"
 import Team from "./pages/Team"
 import Settings from "./pages/Settings"
 import CreateProject from './pages/CreateProject';
+import EditProject from './pages/EditProject';
 
 import Alert from './components/ui/Alert';
 import { showAlert } from './components/ui/Alert';
@@ -30,9 +30,10 @@ export default function App() {
             <Route path="/team" element={<Team />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/createproject" element={<CreateProject />} />
+            <Route path="/editproject" element={<EditProject />} />
+            <Route path="/editproject/:id" element={<EditProject />} />
           </Routes>
         </Router>
-      </AppProvider>
       {/* Bottone di test per le alert */}
       {/* <button
         onClick={() => showAlert("Test alert: Confermato!", "success")}

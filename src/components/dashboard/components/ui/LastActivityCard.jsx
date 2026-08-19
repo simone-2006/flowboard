@@ -1,38 +1,46 @@
 import DashboardCard from "./DashboardCard";
 
-import { useAppContext } from "../../../../context/appContext";
+import { listActivities } from "../../../../api/activities";
 import { formatDateTimeGGMMAAAAHHMMSS } from "../../../../utils/functions";
+import { useEffect, useState } from "react";
 
 export default function LastActivityCard() {
+    const [usersActivities, setUsersActivities] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    const { usersActivities } = useAppContext();
-    const { users } = useAppContext();
-
-    console.log(usersActivities)
+    useEffect(() => {
+        listActivities()
+            .then(setUsersActivities)
+            .catch(setError)
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
         <DashboardCard cardTitle="Last activities">
-            <table className="w-full text-sm border-separate border-spacing-y-1">
+            {loading && <p className="text-sm text-gray-500 mb-2">Loading...</p>}
+            {error && <p className="text-sm text-red-600 mb-2">Could not load activities.</p>}
+            <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
                 <thead>
                     <tr className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white">
-                        <th className="text-left px-2 py-1 rounded-r">Timestamp</th>
-                        <th className="text-left px-2 py-1 rounded-l">User</th>
-                        <th className="text-left px-2 py-1">Action</th>
+                        <th className="w-1/3 text-left px-2 py-1 rounded-r">Timestamp</th>
+                        <th className="w-1/3 text-left px-2 py-1 rounded-l">User</th>
+                        <th className="w-1/3 text-left px-2 py-1">Action</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {usersActivities && usersActivities.length > 0 ? (
-                        usersActivities.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp)).map((activity) => (
-                            <tr key={activity.id} className="group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-700 transition-colors">
+                        [...usersActivities].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).map((activity) => (
+                            <tr key={activity.id} className="group hover:bg-blue-50 border-b border-gray-200 transition-colors">
                                 {/* const creator = users.find(user => user.id === creatorID); */}
-                                <td className="px-2 py-1 text-gray-900 dark:text-gray-200">
-                                    {formatDateTimeGGMMAAAAHHMMSS(activity.timeStamp)}
+                                <td className="w-1/3 px-2 py-1 text-gray-900">
+                                    {formatDateTimeGGMMAAAAHHMMSS(activity.created_at)}
                                 </td>
-                                <td className="px-2 py-1 font-medium text-gray-900 dark:text-gray-200">
-                                    {(users.find(user => user.id === activity.userId)?.name + " " + (users.find(user => user.id === activity.userId)?.surname) ?? "Unknown user")}
+                                <td className="w-1/3 px-2 py-1 font-medium text-gray-900">
+                                    {activity.creator?.name + " " + activity.creator?.surname ?? "Unknown user"}
                                 </td>
-                                <td className="px-2 py-1 text-gray-900 dark:text-gray-200">{activity.activityDescription ?? "No description"}</td>
+                                <td className="w-1/3 px-2 py-1 text-gray-900">{activity.description ?? "No description"}</td>
                             </tr>
                         ))
                     ) : (

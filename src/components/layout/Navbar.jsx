@@ -8,12 +8,18 @@
 import { Link, useLocation } from 'react-router-dom';
 import Button from '../ui/Button';
 
-import { useAppContext } from '../../context/appContext';
+import { getProfileById } from '../../api/profiles';
+import { DEV_USER_ID } from '../../utils/auth';
+import { useEffect, useState } from 'react';
 
 import { Settings } from 'lucide-react';
 
 export default function Navbar() {
-    const { authUserData } = useAppContext()
+    const [authUserData, setAuthUserData] = useState(null);
+
+    useEffect(() => {
+        getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => { });
+    }, []);
     // console.log(authUserData)
 
     const navElements = [
