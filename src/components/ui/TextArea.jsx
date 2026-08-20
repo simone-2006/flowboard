@@ -1,6 +1,6 @@
 import React from "react";
 
-export default function Input({ variant = "primary", icon = "", ...props }) {
+export default function TextArea({ variant = "primary", icon = "", disabled, style, ...props }) {
     const variantClass = {
         primary: "border border-blue-500 focus:ring-1 focus:ring-blue-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500",
         ghost: "border-transparent bg-transparent text-blue-500 dark:text-blue-400 placeholder-blue-300 dark:placeholder-blue-500/50 focus:ring-1 focus:ring-blue-100 dark:focus:ring-blue-500/30",
@@ -9,10 +9,12 @@ export default function Input({ variant = "primary", icon = "", ...props }) {
         warning: "border border-yellow-400 focus:ring-1 focus:ring-yellow-400 bg-white dark:bg-gray-800 text-yellow-900 dark:text-yellow-200 placeholder-yellow-500 dark:placeholder-yellow-400/60"
     };
     return (
-        <div className="flex items-center gap-2 w-auto">
+        <div className="flex items-start gap-2 w-auto">
             {icon && <span className="text-gray-500 dark:text-gray-400">{icon}</span>}
-            <input
-                className={`px-1.5 py-0.5 rounded-md outline-none w-full ${variantClass[variant]} ${props.disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+            <textarea
+                disabled={disabled}
+                className={`px-1.5 py-1 rounded-md outline-none w-full resize-y ${variantClass[variant]} ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
+                style={{ minHeight: "5rem", ...style }}
                 {...props}
             />
         </div>
