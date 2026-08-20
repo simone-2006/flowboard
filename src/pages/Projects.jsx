@@ -46,7 +46,7 @@ export default function Projects() {
                             variant="ghostPrimary"
                             icon={<Plus size={18} />}
                         >
-                            Create new project
+                            <p className="hidden md:block ">Create new project</p>
                         </Button>
                     </Link>
                 </div>

@@ -120,7 +120,7 @@ export default function ProjectCard({
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-xl">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex flex-col md:flex-row md:items-center justify-between mb-3 gap-2">
                 <div className="flex gap-3 items-center">
                     <div
                         className="h-4 w-4 rounded-full border-2 border-gray-200 dark:border-gray-600"
@@ -129,7 +129,7 @@ export default function ProjectCard({
                     <h1 className="text-2xl font-bold tracking-tight text-black dark:text-white">{name}</h1>
                     <ProjectStatusChip status={status} />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-end">
                     <Link to={`/editProject/${id}`}>
                         <Button variant="ghost" icon={<Pen size={18} />} aria-label="Edit project" />
                     </Link>
@@ -155,7 +155,7 @@ export default function ProjectCard({
                 </span>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col md:flex-row md:items-center justify-between">
                 <div className="flex items-center justify-between text-sm mb-1 text-black dark:text-white">
                     <div>
                         <span>Task completed:</span>
