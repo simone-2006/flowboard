@@ -11,7 +11,6 @@ import CreateProject from './pages/CreateProject';
 import EditProject from './pages/EditProject';
 
 {/* TEST */ }
-// import ConfirmModal from './components/ui/ConfirmModal';
 {/* TEST */ }
 
 import Alert from './components/ui/Alert';
@@ -26,11 +25,9 @@ export default function App() {
         </div>
 
         {/* TEST */}
-        {/* <ConfirmModal isOpen={true}></ConfirmModal> */}
         {/* TEST */}
 
         <Navbar />
-
 
         <Routes>
           <Route path="/" element={<Dashboard />} />

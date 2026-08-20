@@ -1,43 +1,43 @@
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import TaskCheckbox from "./TaskCheckbox";
-import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
-import ProjectStatusChip from "./ProjectStatusChip";
-
-
-import ConfirmModal from "../ui/ConfirmModal";
-
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Trash, Pen, Plus, Minus, X } from 'lucide-react';
+import { Trash, Pen } from "lucide-react";
+import useSound from "use-sound";
+
+import Button from "../ui/Button";
+import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
+import ProjectStatusChip from "./ProjectStatusChip";
+import TasksTable from "./TasksTable";
+import ConfirmModal from "../ui/ConfirmModal";
+import { showAlert } from "../ui/Alert";
 
 import { getProfileById, listProfiles } from "../../api/profiles";
 import { addTaskToProject, deleteTask, listTasksByProject, toggleTask } from "../../api/tasks";
-
-import { showAlert } from "../ui/Alert";
+import { deleteProject } from "../../api/projects";
 import { formatDateGGMMAAAA } from "../../utils/functions";
 import { DEV_USER_ID } from "../../utils/auth";
+import dingSound from "../../sound/Ding.mp3";
 
-import useSound from 'use-sound';
-import dingSound from '../../sound/Ding.mp3';
-
-
-export default function ProjectCard(
-    {
-        name,
-        id,
-        description,
-        color,
-        creatorID,
-        tasks: initialTasks,
-        dueDate,
-        status
-    }
-) {
+export default function ProjectCard({
+    name,
+    id,
+    description,
+    color,
+    creatorID,
+    tasks: initialTasks,
+    dueDate,
+    status,
+    onDeleted,
+}) {
     const [authUserData, setAuthUserData] = useState(null);
     const [users, setUsers] = useState([]);
     const [tasks, setTasks] = useState(initialTasks ?? []);
+    const [playDing] = useSound(dingSound);
+
+    const [addTaskOpen, setAddTaskOpen] = useState(false);
+    const [newTaskName, setNewTaskName] = useState("");
+    const [newTaskDue, setNewTaskDue] = useState("");
+    const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false);
+    const [taskToDelete, setTaskToDelete] = useState(null);
 
     useEffect(() => {
         getProfileById(DEV_USER_ID).then(setAuthUserData).catch(() => { });
@@ -48,26 +48,18 @@ export default function ProjectCard(
         setTasks(initialTasks ?? []);
     }, [id]);
 
-    const [playDing] = useSound(dingSound);
-
     const totalTask = tasks.length;
-    const taskCompleted = tasks.filter(task => task.completed).length;
-    const taskTodo = tasks.filter(task => !task.completed).length;
+    const taskCompleted = tasks.filter((task) => task.completed).length;
     const tasksPercentage = totalTask === 0 ? 0 : ((100 * taskCompleted) / totalTask).toFixed(0);
 
+    const creator = users.find((user) => user.id === creatorID);
+    const creatorLabel = !creator
+        ? "Unknown"
+        : creatorID === authUserData?.id
+            ? `you (${creator.name} ${creator.surname})`
+            : `${creator.name} ${creator.surname}`;
 
-    const [addTaskOpen, setAddTaskOpen] = useState(false);
-    const [newTaskName, setNewTaskName] = useState("");
-    const [newTaskDue, setNewTaskDue] = useState("");
-
-    const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false);
-    const [showDeleteTaskModal, setShowDeleteTaskModal] = useState(false);
-
-    const handleOpenAddTask = () => {
-        addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
-    };
-
-    const handleToggleTask = async (taskID) => {
+    async function handleToggleTask(taskID) {
         try {
             const result = await toggleTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
             setTasks(await listTasksByProject(id));
@@ -83,114 +75,91 @@ export default function ProjectCard(
     }
 
     async function handleAddTask() {
-        if (newTaskName === "") {
-            showAlert("Error task name can't be empty", "error")
-            return
+        if (newTaskName.trim() === "") {
+            showAlert("Task name can't be empty", "error");
+            return;
         }
-        // if (newTaskDue === "") {
-        //     showAlert("Error task due date can't be empty", "error")
-        //     return
-        // }
-
         try {
-            await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID);
+            await addTaskToProject(id, newTaskName.trim(), newTaskDue, authUserData?.id ?? DEV_USER_ID);
             setTasks(await listTasksByProject(id));
             showAlert("Task added to project", "success");
             playDing();
-            setAddTaskOpen(false)
-            setNewTaskName("")
-            setNewTaskDue("")
+            setAddTaskOpen(false);
+            setNewTaskName("");
+            setNewTaskDue("");
         } catch {
-            showAlert("Error", "error");
+            showAlert("Error adding task", "error");
         }
     }
 
-    async function handleDeleteTask(taskID) {
+    async function handleConfirmDeleteTask() {
+        if (!taskToDelete) return;
         try {
-            await deleteTask(id, taskID, authUserData?.id ?? DEV_USER_ID);
+            await deleteTask(id, taskToDelete.id, authUserData?.id ?? DEV_USER_ID);
             setTasks(await listTasksByProject(id));
             showAlert("Task deleted from project", "success");
             playDing();
         } catch {
-            showAlert("Error", "error");
+            showAlert("Error deleting task", "error");
+        } finally {
+            setTaskToDelete(null);
         }
-        setShowDeleteTaskModal(false)
     }
 
     async function handleDeleteProject() {
-        console.log("Delete project")
-        setShowDeleteProjectModal(false)
+        try {
+            await deleteProject(id, authUserData?.id ?? DEV_USER_ID);
+            showAlert("Project deleted", "success");
+            playDing();
+            setShowDeleteProjectModal(false);
+            onDeleted?.(id);
+        } catch {
+            showAlert("Error deleting project", "error");
+        }
     }
-
-    // console.log(showDeleteProjectModal)
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-xl">
-            {/* Header Section */}
             <div className="flex items-center justify-between mb-3">
                 <div className="flex gap-3 items-center">
                     <div
                         className="h-4 w-4 rounded-full border-2 border-gray-200 dark:border-gray-600"
                         style={{ backgroundColor: color }}
-                    ></div>
+                    />
                     <h1 className="text-2xl font-bold tracking-tight text-black dark:text-white">{name}</h1>
                     <ProjectStatusChip status={status} />
                 </div>
                 <div className="flex items-center gap-2">
-                    <Link to={`/editProject/${id}`}><Button variant="ghost" icon={<Pen size={18} />} className="transition hover:bg-blue-100"></Button></Link>
-
+                    <Link to={`/editProject/${id}`}>
+                        <Button variant="ghost" icon={<Pen size={18} />} aria-label="Edit project" />
+                    </Link>
                     <Button
                         variant="danger"
                         icon={<Trash size={18} />}
                         onClick={() => setShowDeleteProjectModal(true)}
                         aria-label="Delete project"
                     />
-
-                    <ConfirmModal
-                        isOpen={showDeleteProjectModal}
-                        title={`Are you sure you want to delete this project? (${name}) `}
-                        message={"This action is irreversible."}
-                        onCancel={() => setShowDeleteProjectModal(false)}
-                        onConfirm={() => handleDeleteProject}
-                        confirmButtonVariant="danger"
-                    ></ConfirmModal>
                 </div>
             </div>
 
-            {/* Description */}
             <p className="text-sm text-gray-500 dark:text-gray-300 mb-2 italic">{description}</p>
 
-            {/* Meta Info Row */}
             <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-3">
                 <span>
                     <span className="font-medium text-gray-700 dark:text-gray-300">Created by: </span>
-                    {(() => {
-                        const creator = users.find(user => user.id === creatorID);
-
-                        if (creator && creatorID === authUserData?.id) {
-                            return <span className="ml-1">you ({creator.name} {creator.surname})</span>;
-                        }
-
-                        // console.log(authUserData.id)
-                        return creator
-                            ? <span className="ml-1">{creator.name} {creator.surname}</span>
-                            : <span className="ml-1 text-gray-400 dark:text-gray-500">Unknown</span>;
-                    })()}
+                    <span className="ml-1">{creatorLabel}</span>
                 </span>
                 <span>
                     <span className="font-medium">Due: </span>
-                    <span className="">{dueDate ? (() => {
-                        return formatDateGGMMAAAA(dueDate)
-                    })() : '-'}</span>
+                    {dueDate ? formatDateGGMMAAAA(dueDate) : "-"}
                 </span>
             </div>
 
-            {/* Progress and Stats */}
             <div className="flex items-center justify-between">
                 <div className="flex items-center justify-between text-sm mb-1 text-black dark:text-white">
                     <div>
-                        <span className="">Task completed:</span>
-                        <span className="font-semibold ml-1 ">{taskCompleted}</span>
+                        <span>Task completed:</span>
+                        <span className="font-semibold ml-1">{taskCompleted}</span>
                         <span className="text-gray-400 dark:text-gray-500">/</span>
                         <span className="font-semibold">{totalTask}</span>
                     </div>
@@ -200,110 +169,38 @@ export default function ProjectCard(
                 </div>
             </div>
 
+            <TasksTable
+                tasks={tasks}
+                addTaskOpen={addTaskOpen}
+                newTaskName={newTaskName}
+                newTaskDue={newTaskDue}
+                onToggleAdd={() => setAddTaskOpen((open) => !open)}
+                onNewTaskNameChange={setNewTaskName}
+                onNewTaskDueChange={setNewTaskDue}
+                onAddTask={handleAddTask}
+                onToggleTask={handleToggleTask}
+                onDeleteTask={setTaskToDelete}
+            />
 
-            {/* Tasks Table */}
-            <div className="rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mt-2 border border-gray-100 dark:border-gray-600 shadow-sm">
-                <div className="flex items-center justify-between mb-2">
-                    <h2 className="text-base font-bold text-black dark:text-white tracking-tight">Tasks</h2>
-                    <Button
-                        variant="ghostPrimary"
-                        icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
-                        onClick={handleOpenAddTask}
-                        className="transition hover:bg-purple-100"
-                    >
-                        {addTaskOpen ? "Close" : "Add task"}
-                    </Button>
-                </div>
-                <div className="overflow-x-auto rounded">
-                    <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
-                        <thead>
-                            <tr className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
-                                <th className="w-1/4 text-left px-2 py-1 rounded-l">Title</th>
-                                <th className="w-1/4 text-left px-2 py-1">Due date</th>
-                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Completed</th>
-                                <th className="w-1/4 text-left px-2 py-1 rounded-r">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tasks.map(task => (
-                                <tr
-                                    key={task.id}
-                                    className={`group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors text-gray-900 dark:text-gray-200 ${task.completed ? " bg-green-200/60 dark:bg-green-900/40" : ""}`}
-                                >
-                                    <td className="w-1/4 px-2 py-1 font-medium text-gray-900 dark:text-gray-200">{task.title}</td>
-                                    <td className="w-1/4 px-2 py-1">
+            <ConfirmModal
+                isOpen={showDeleteProjectModal}
+                title={`Delete project "${name}"?`}
+                message="This action is irreversible."
+                confirmButtonVariant="danger"
+                confirmButtonText="Delete"
+                onCancel={() => setShowDeleteProjectModal(false)}
+                onConfirm={handleDeleteProject}
+            />
 
-                                        {task.dueDate
-                                            ? (() => {
-                                                return formatDateGGMMAAAA(task.dueDate)
-                                            })()
-                                            : '-'
-                                        }
-                                        {task.dueDate && (() => {
-                                            const currentDate = new Date();
-                                            const dueDate = new Date(task.dueDate);
-                                            if (dueDate < currentDate && !task.completed) {
-                                                return <span className="text-red-600 dark:text-red-400 font-bold ml-1 animate-pulse">!</span>;
-                                            }
-                                            return null;
-                                        })()}
-                                    </td>
-                                    <td className="w-1/4 px-2 py-1">
-                                        <div className="flex justify-start">
-                                            <TaskCheckbox
-                                                checked={task.completed}
-                                                onChange={() => handleToggleTask(task.id)}
-                                            />
-                                        </div>
-                                    </td>
-                                    <td className="w-1/4 px-2 py-1">
-                                        <div className="flex items-center gap-2">
-                                            <button
-                                                className="cursor-pointer" title="Delete task"
-                                                onClick={() => handleEditTask(task.id)}
-                                            >
-                                                <Pen size={18} />
-                                            </button>
-                                            <button
-                                                className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
-                                                onClick={() => setShowDeleteTaskModal(true)}
-                                            >
-                                                <X size={18} />
-                                            </button>
-                                            <ConfirmModal
-                                                isOpen={showDeleteTaskModal}
-                                                title={`Are you sure you want to delete this task? (${task.title}) `}
-                                                message={"This action is irreversible."}
-                                                onCancel={() => setShowDeleteTaskModal(false)}
-                                                onConfirm={() => handleDeleteTask(task.id)}
-                                                confirmButtonVariant="danger"
-                                            ></ConfirmModal>
-                                        </div>
-                                    </td>
-
-                                </tr>
-                            ))}
-                            {addTaskOpen && (
-                                <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600 animate-fade-in">
-                                    <td className="w-1/4 px-2 py-0.5">
-                                        <Input placeholder="Task title..." onChange={e => setNewTaskName(e.target.value)} value={newTaskName} />
-                                    </td>
-                                    <td className="w-1/4 px-2 py-0.5">
-                                        <Input type="date" onChange={e => setNewTaskDue(e.target.value)} value={newTaskDue} />
-                                    </td>
-                                    <td className="w-1/4"></td>
-                                    <td className="w-1/4 px-2 py-0.5 flex justify-start items-center">
-                                        <Button onClick={handleAddTask}>
-                                            Add
-                                        </Button>
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <ConfirmModal
+                isOpen={Boolean(taskToDelete)}
+                title={`Delete task "${taskToDelete?.title ?? ""}"?`}
+                message="This action is irreversible."
+                confirmButtonVariant="danger"
+                confirmButtonText="Delete"
+                onCancel={() => setTaskToDelete(null)}
+                onConfirm={handleConfirmDeleteTask}
+            />
         </div>
-
     );
 }

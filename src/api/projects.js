@@ -17,7 +17,7 @@ export async function listProjects(id) {
             .select(PROJECT_SELECT)
             .eq('id', id));
         // console.log(data)
-    } else if(!id) {
+    } else if (!id) {
         ({ data, error } = await supabase
             .from('projects')
             .select(PROJECT_SELECT));
@@ -156,5 +156,48 @@ export async function updateProject(editedProject, userId = DEV_USER_ID) {
     });
 
     return project;
+}
+
+export async function deleteProject(projectId, userId = DEV_USER_ID) {
+    const { data: project, error: fetchError } = await supabase
+        .from("projects")
+        .select("id, name")
+        .eq("id", projectId)
+        .single();
+
+    if (fetchError || !project) {
+        throw fetchError || new Error("Project not found");
+    }
+
+    const { error: activitiesError } = await supabase
+        .from("activities")
+        .update({ project_id: null })
+        .eq("project_id", projectId);
+
+    if (activitiesError) throw activitiesError;
+
+    const { error: tasksError } = await supabase
+        .from("tasks")
+        .delete()
+        .eq("project_id", projectId);
+
+    if (tasksError) throw tasksError;
+
+    const { error } = await supabase
+        .from("projects")
+        .delete()
+        .eq("id", projectId);
+
+    if (error) throw error;
+
+    await createUserActivity({
+        userId: userId || DEV_USER_ID,
+        projectId: null,
+        taskId: null,
+        activityDescription: "Deleted a project",
+        projectName: project.name,
+    });
+
+    return 1;
 }
 

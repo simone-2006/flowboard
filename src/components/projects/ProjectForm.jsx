@@ -1,29 +1,31 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { ChevronLeft, Plus, Minus, X } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 
 import Button from "../ui/Button";
 import Input from "../ui/Input";
 import Select from "../ui/Select";
 import TextArea from "../ui/TextArea";
-import TaskCheckbox from "./TaskCheckbox";
+import ConfirmModal from "../ui/ConfirmModal";
+import TasksTable from "./TasksTable";
 import { showAlert } from "../ui/Alert";
-import { formatDateGGMMAAAA } from "../../utils/functions";
 
 const labelClass = "block mb-1 font-medium text-gray-900 dark:text-gray-100";
 
-function isTaskOverdue(dueDate, completed) {
-    if (!dueDate || completed) return false;
-    const due = String(dueDate).slice(0, 10);
-    const now = new Date();
-    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
-    return due < today;
-}
-
-function formatTaskDue(dueDate) {
-    if (!dueDate) return "-";
-    const formatted = formatDateGGMMAAAA(dueDate);
-    return formatted || "-";
+function snapshot(values) {
+    return JSON.stringify({
+        name: values.name ?? "",
+        description: values.description ?? "",
+        color: values.color ?? "",
+        dueDate: values.dueDate || "",
+        status: values.status ?? "",
+        tasks: (values.tasks ?? []).map((task) => ({
+            id: task.id,
+            title: task.title,
+            dueDate: task.dueDate || "",
+            completed: Boolean(task.completed),
+        })),
+    });
 }
 
 export default function ProjectForm({
@@ -34,6 +36,7 @@ export default function ProjectForm({
     submittingLabel,
     onSubmit,
 }) {
+    const navigate = useNavigate();
     const [name, setName] = useState(initialValues.name ?? "");
     const [description, setDescription] = useState(initialValues.description ?? "");
     const [color, setColor] = useState(initialValues.color || "#ffd000");
@@ -45,6 +48,10 @@ export default function ProjectForm({
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDue, setNewTaskDue] = useState("");
     const [saving, setSaving] = useState(false);
+    const [warningExitModal, setWarningExitModal] = useState(false);
+
+    const initialSnapshot = useMemo(() => snapshot(initialValues), [initialValues]);
+    const isDirty = snapshot({ name, description, color, dueDate, status, tasks }) !== initialSnapshot;
 
     function handleAddTask() {
         if (newTaskName.trim() === "") {
@@ -65,8 +72,8 @@ export default function ProjectForm({
         setNewTaskDue("");
     }
 
-    function handleDeleteTask(taskID) {
-        setTasks((prev) => prev.filter((task) => task.id !== taskID));
+    function handleDeleteTask(task) {
+        setTasks((prev) => prev.filter((item) => item.id !== task.id));
     }
 
     function handleToggleTask(taskID) {
@@ -75,6 +82,14 @@ export default function ProjectForm({
                 task.id !== taskID ? task : { ...task, completed: !task.completed }
             )
         );
+    }
+
+    function handleBack() {
+        if (isDirty) {
+            setWarningExitModal(true);
+            return;
+        }
+        navigate("/projects");
     }
 
     async function handleSubmit(e) {
@@ -102,9 +117,9 @@ export default function ProjectForm({
         <>
             <form onSubmit={handleSubmit}>
                 <div className="flex items-center justify-between gap-2">
-                    <Link to="/projects">
-                        <Button variant="ghost" icon={<ChevronLeft size={18} />}>Back</Button>
-                    </Link>
+                    <Button variant="ghost" icon={<ChevronLeft size={18} />} onClick={handleBack}>
+                        Back
+                    </Button>
                     <Button type="submit" variant="primary" disabled={saving}>
                         {saving ? submittingLabel : submitLabel}
                     </Button>
@@ -112,7 +127,9 @@ export default function ProjectForm({
 
                 <h1 className="font-bold text-2xl my-2 text-black dark:text-white">
                     {title}
-                    {subtitle ? <span className="text-gray-500 dark:text-gray-400 font-semibold"> ({subtitle})</span> : null}
+                    {subtitle ? (
+                        <span className="text-gray-500 dark:text-gray-400 font-semibold"> ({subtitle})</span>
+                    ) : null}
                 </h1>
 
                 <div className="md:max-w-2xl">
@@ -187,118 +204,31 @@ export default function ProjectForm({
                         </div>
                     </div>
 
-                    <div className="rounded-lg bg-gray-50 dark:bg-gray-700 p-3 mt-2 mb-4 border border-gray-100 dark:border-gray-600 shadow-sm">
-                        <div className="flex items-center justify-between mb-2">
-                            <h2 className="text-base font-bold text-gray-900 dark:text-white tracking-tight">
-                                Tasks
-                                <span className="ml-2 text-xs font-medium text-gray-500 dark:text-gray-300">
-                                    {tasks.length}
-                                </span>
-                            </h2>
-                            <Button
-                                variant="ghostPrimary"
-                                icon={!addTaskOpen ? <Plus size={18} /> : <Minus size={18} />}
-                                onClick={() => setAddTaskOpen((open) => !open)}
-                                type="button"
-                            >
-                                {addTaskOpen ? "Close" : "Add task"}
-                            </Button>
-                        </div>
-
-                        {tasks.length === 0 && !addTaskOpen ? (
-                            <p className="text-sm text-gray-500 dark:text-gray-300 px-1 py-3">
-                                No tasks yet. Add one to get started.
-                            </p>
-                        ) : (
-                            <div className="overflow-x-auto rounded">
-                                <table className="w-full text-sm border-separate border-spacing-y-1 table-fixed">
-                                    <thead>
-                                        <tr className="bg-gray-100 dark:bg-gray-800 text-black dark:text-white">
-                                            <th className="w-1/4 text-left px-2 py-1 rounded-l">Title</th>
-                                            <th className="w-1/4 text-left px-2 py-1">Due date</th>
-                                            <th className="w-1/4 text-left px-2 py-1">Completed</th>
-                                            <th className="w-1/4 text-left px-2 py-1 rounded-r">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {tasks.map((task) => (
-                                            <tr
-                                                key={task.id}
-                                                className="group hover:bg-blue-50 dark:hover:bg-blue-900/30 border-b border-gray-200 dark:border-gray-600 transition-colors"
-                                            >
-                                                <td className="w-1/4 px-2 py-1 font-medium text-gray-900 dark:text-gray-200">
-                                                    {task.title}
-                                                </td>
-                                                <td className="w-1/4 px-2 py-1">
-                                                    {formatTaskDue(task.dueDate)}
-                                                    {isTaskOverdue(task.dueDate, task.completed) ? (
-                                                        <span className="text-red-600 dark:text-red-400 font-bold ml-1 animate-pulse">!</span>
-                                                    ) : null}
-                                                </td>
-                                                <td className="w-1/4 px-2 py-1">
-                                                    <div className="flex justify-start">
-                                                        <TaskCheckbox
-                                                            checked={task.completed}
-                                                            onChange={() => handleToggleTask(task.id)}
-                                                        />
-                                                    </div>
-                                                </td>
-                                                <td className="w-1/4 px-2 py-1">
-                                                    <button
-                                                        type="button"
-                                                        className="text-red-600 dark:text-red-400 cursor-pointer"
-                                                        title="Delete task"
-                                                        onClick={() => handleDeleteTask(task.id)}
-                                                    >
-                                                        <X size={18} />
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                        {addTaskOpen && (
-                                            <tr className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-gray-200 dark:border-gray-600">
-                                                <td className="px-2 py-0.5">
-                                                    <Input
-                                                        placeholder="Task title..."
-                                                        autoFocus
-                                                        onChange={(e) => setNewTaskName(e.target.value)}
-                                                        value={newTaskName}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === "Enter") {
-                                                                e.preventDefault();
-                                                                handleAddTask();
-                                                            }
-                                                        }}
-                                                    />
-                                                </td>
-                                                <td className="px-2 py-0.5">
-                                                    <Input
-                                                        type="date"
-                                                        onChange={(e) => setNewTaskDue(e.target.value)}
-                                                        value={newTaskDue}
-                                                        onKeyDown={(e) => {
-                                                            if (e.key === "Enter") {
-                                                                e.preventDefault();
-                                                                handleAddTask();
-                                                            }
-                                                        }}
-                                                    />
-                                                </td>
-                                                <td></td>
-                                                <td className="px-2 py-0.5 flex justify-start items-center">
-                                                    <Button onClick={handleAddTask} type="button">
-                                                        Add
-                                                    </Button>
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
-                    </div>
+                    <TasksTable
+                        tasks={tasks}
+                        addTaskOpen={addTaskOpen}
+                        newTaskName={newTaskName}
+                        newTaskDue={newTaskDue}
+                        onToggleAdd={() => setAddTaskOpen((open) => !open)}
+                        onNewTaskNameChange={setNewTaskName}
+                        onNewTaskDueChange={setNewTaskDue}
+                        onAddTask={handleAddTask}
+                        onToggleTask={handleToggleTask}
+                        onDeleteTask={handleDeleteTask}
+                    />
                 </div>
             </form>
+
+            <ConfirmModal
+                isOpen={warningExitModal}
+                title="Leave without saving?"
+                message="Your edits won't be saved. Tasks and project data will stay as they are now."
+                confirmButtonVariant="danger"
+                confirmButtonText="Leave without saving"
+                cancelButtonText="Keep editing"
+                onCancel={() => setWarningExitModal(false)}
+                onConfirm={() => navigate("/projects")}
+            />
         </>
     );
 }

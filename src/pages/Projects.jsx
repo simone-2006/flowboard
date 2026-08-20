@@ -75,6 +75,9 @@ export default function Projects() {
                         tasks={project.tasks}
                         dueDate={project.dueDate}
                         status={project.status}
+                        onDeleted={(projectId) =>
+                            setProjects((prev) => prev.filter((item) => item.id !== projectId))
+                        }
                     />
                 )}
             </div>
