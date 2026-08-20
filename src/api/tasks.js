@@ -50,9 +50,9 @@ export async function addTaskToProject(projectId, taskName, taskDue, userId = DE
     if (taskName === '') {
         throw new Error("Error task name can't be empty");
     }
-    if (taskDue === '') {
-        throw new Error("Error task due date can't be empty");
-    }
+    // if (taskDue === '') {
+    //     throw new Error("Error task due date can't be empty");
+    // }
 
     const { data, error } = await supabase
         .from('tasks')

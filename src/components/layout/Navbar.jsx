@@ -64,7 +64,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className='flex justify-between items-center rounded-md shadow-md bg-white dark:bg-gray-900 gap-2 p-2 m-2'>
+        <nav className='flex justify-between items-center rounded-b-md shadow-md bg-white dark:bg-gray-900 gap-2 p-2'>
             <ul className='flex items-center gap-2'>
                 {navElements.map(({ name, link }) => (
                     <Button

@@ -5,6 +5,9 @@ import TaskCompletionProgressBar from "../ui/TaskCompletionProgressBar";
 import ProjectStatusChip from "./ProjectStatusChip";
 
 
+import ConfirmModal from "../ui/ConfirmModal";
+
+
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Trash, Pen, Plus, Minus, X } from 'lucide-react';
@@ -57,6 +60,9 @@ export default function ProjectCard(
     const [newTaskName, setNewTaskName] = useState("");
     const [newTaskDue, setNewTaskDue] = useState("");
 
+    const [showDeleteProjectModal, setShowDeleteProjectModal] = useState(false);
+    const [showDeleteTaskModal, setShowDeleteTaskModal] = useState(false);
+
     const handleOpenAddTask = () => {
         addTaskOpen ? setAddTaskOpen(false) : setAddTaskOpen(true)
     };
@@ -81,10 +87,10 @@ export default function ProjectCard(
             showAlert("Error task name can't be empty", "error")
             return
         }
-        if (newTaskDue === "") {
-            showAlert("Error task due date can't be empty", "error")
-            return
-        }
+        // if (newTaskDue === "") {
+        //     showAlert("Error task due date can't be empty", "error")
+        //     return
+        // }
 
         try {
             await addTaskToProject(id, newTaskName, newTaskDue, authUserData?.id ?? DEV_USER_ID);
@@ -108,8 +114,15 @@ export default function ProjectCard(
         } catch {
             showAlert("Error", "error");
         }
+        setShowDeleteTaskModal(false)
     }
 
+    async function handleDeleteProject() {
+        console.log("Delete project")
+        setShowDeleteProjectModal(false)
+    }
+
+    // console.log(showDeleteProjectModal)
 
     return (
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 transition-shadow hover:shadow-xl">
@@ -126,7 +139,21 @@ export default function ProjectCard(
                 <div className="flex items-center gap-2">
                     <Link to={`/editProject/${id}`}><Button variant="ghost" icon={<Pen size={18} />} className="transition hover:bg-blue-100"></Button></Link>
 
-                    <Button variant="danger" icon={<Trash size={18} />} className="transition hover:bg-red-100"></Button>
+                    <Button
+                        variant="danger"
+                        icon={<Trash size={18} />}
+                        onClick={() => setShowDeleteProjectModal(true)}
+                        aria-label="Delete project"
+                    />
+
+                    <ConfirmModal
+                        isOpen={showDeleteProjectModal}
+                        title={`Are you sure you want to delete this project? (${name}) `}
+                        message={"This action is irreversible."}
+                        onCancel={() => setShowDeleteProjectModal(false)}
+                        onConfirm={() => handleDeleteProject}
+                        confirmButtonVariant="danger"
+                    ></ConfirmModal>
                 </div>
             </div>
 
@@ -230,12 +257,28 @@ export default function ProjectCard(
                                         </div>
                                     </td>
                                     <td className="w-1/4 px-2 py-1">
-                                        <button
-                                            className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
-                                            onClick={() => handleDeleteTask(task.id)}
-                                        >
-                                            <X size={18} />
-                                        </button>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                className="cursor-pointer" title="Delete task"
+                                                onClick={() => handleEditTask(task.id)}
+                                            >
+                                                <Pen size={18} />
+                                            </button>
+                                            <button
+                                                className="text-red-600 dark:text-red-400 cursor-pointer" title="Delete task"
+                                                onClick={() => setShowDeleteTaskModal(true)}
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                            <ConfirmModal
+                                                isOpen={showDeleteTaskModal}
+                                                title={`Are you sure you want to delete this task? (${task.title}) `}
+                                                message={"This action is irreversible."}
+                                                onCancel={() => setShowDeleteTaskModal(false)}
+                                                onConfirm={() => handleDeleteTask(task.id)}
+                                                confirmButtonVariant="danger"
+                                            ></ConfirmModal>
+                                        </div>
                                     </td>
 
                                 </tr>

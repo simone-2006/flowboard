@@ -10,6 +10,10 @@ import Settings from "./pages/Settings"
 import CreateProject from './pages/CreateProject';
 import EditProject from './pages/EditProject';
 
+{/* TEST */ }
+// import ConfirmModal from './components/ui/ConfirmModal';
+{/* TEST */ }
+
 import Alert from './components/ui/Alert';
 import { showAlert } from './components/ui/Alert';
 
@@ -20,7 +24,13 @@ export default function App() {
         {/* Alert container - fixed to stay visible when scrolling */}
         <div className="fixed right-0 top-0 p-2 z-50" id="alert-container">
         </div>
+
+        {/* TEST */}
+        {/* <ConfirmModal isOpen={true}></ConfirmModal> */}
+        {/* TEST */}
+
         <Navbar />
+
 
         <Routes>
           <Route path="/" element={<Dashboard />} />
